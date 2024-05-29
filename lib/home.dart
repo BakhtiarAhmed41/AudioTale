@@ -12,7 +12,7 @@ class  Home extends StatelessWidget {
         backgroundColor: Color(0xff10263C),
       ),
       body: Center(
-        child: Text("Welcome to the HomePage")
+        child: Text("Welcome to the HomePage", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.red),)
       ),
     );
   }
