@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "731644264441",
+    "project_id": "audio-tale",
+    "storage_bucket": "audio-tale.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:731644264441:android:08fc62ecb84519cf4f4728",
+        "android_client_info": {
+          "package_name": "com.example.audio_tale"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBH4d5dfJRHIYz_1fR6PW80EMD94bhFcz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

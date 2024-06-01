@@ -1,9 +1,18 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'splash_screen.dart';
 
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: 'apikey',
+        appId: 'appId',
+        messagingSenderId: 'messagingSenderId',
+        projectId: 'projectId',
+        storageBucket: 'storageBucket',   ));
   runApp(const MyApp());
 }
 
