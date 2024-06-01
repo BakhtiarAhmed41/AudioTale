@@ -15,28 +15,30 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("AudioTale", style: Theme.of(context).appBarTheme.titleTextStyle),
+        title: Text("Welcome to AudioTale", style: Theme.of(context).appBarTheme.titleTextStyle),
         centerTitle: true,
         backgroundColor: const Color(0xff10263C),
-        actions: const [Icon(Icons.settings)],
+        actions: const [Icon(Icons.account_circle_sharp, size: 30,),
+        SizedBox(width: 10,)],
 
       ),
       body:Padding(
-        padding:EdgeInsets.all(10),
+        padding:const EdgeInsets.all(10),
         child: Column(
           children:[
-            Text("Categories", style: Theme.of(context).textTheme.displayLarge, textAlign: TextAlign.center,),
-            SizedBox(height:30),
+            const SizedBox(height:30),
+            Text("Categories", style: Theme.of(context).textTheme.displayLarge, textAlign: TextAlign.center),
+            const SizedBox(height:40),
             InkWell(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>AudioBooks()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const AudioBooks()));
               },
               splashColor: Colors.transparent,
               child: Center(
                 child: Container(
                   height:250,
                   width: 300,
-                  margin:EdgeInsets.only(bottom:30),
+                  margin:const EdgeInsets.only(bottom:50),
                   decoration:BoxDecoration(
                     color:Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(10),
@@ -46,7 +48,7 @@ class _HomeState extends State<Home> {
                           color: Theme.of(context).primaryColor,
                         ),
                       ],
-                    image:DecorationImage(
+                    image:const DecorationImage(
                       fit:BoxFit.cover,
                       image:AssetImage("assets/Classic.jpg"),
                       colorFilter: ColorFilter.mode(
@@ -55,21 +57,21 @@ class _HomeState extends State<Home> {
                       ),
                     )
                   ),
-                  child:Center(child:Padding(padding:EdgeInsets.all(4),child:Text("Audio Books",style:Theme.of(context).textTheme.displayLarge))),
+                  child:Center(child:Padding(padding:const EdgeInsets.all(4),child:Text("AudioBooks",style:Theme.of(context).textTheme.displayLarge))),
 
                 ),
               ),
             ),
             InkWell(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>CommunityCreations()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const CommunityCreations()));
               },
               splashColor: Colors.transparent,
               child: Center(
                 child: Container(
                   height:250,
                   width: 300,
-                  margin:EdgeInsets.only(bottom:10),
+                  margin:const EdgeInsets.only(bottom:10),
                   decoration:BoxDecoration(
                       color:Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(10),
@@ -79,16 +81,16 @@ class _HomeState extends State<Home> {
                           color: Theme.of(context).primaryColor,
                         ),
                       ],
-                      image:DecorationImage(
+                      image:const DecorationImage(
                         fit:BoxFit.cover,
                         image:AssetImage("assets/CommunityCreations.jpg"),
                         colorFilter: ColorFilter.mode(
-                          Colors.black38, // Adjust the opacity and color here
+                          Colors.black38,
                           BlendMode.darken,
                         ),
                       )
                   ),
-                  child:Center(child:Padding(padding:EdgeInsets.all(4),child:Text("Community Creations",style:Theme.of(context).textTheme.displayLarge))),
+                  child:Center(child:Padding(padding:const EdgeInsets.all(4),child:Text("Community Creations",style:Theme.of(context).textTheme.displayLarge))),
 
                 ),
               ),
