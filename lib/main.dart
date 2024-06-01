@@ -7,7 +7,7 @@ import 'splash_screen.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options: FirebaseOptions(
+      options: const FirebaseOptions(
         apiKey: 'apikey',
         appId: 'appId',
         messagingSenderId: 'messagingSenderId',
