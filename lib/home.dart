@@ -7,13 +7,19 @@ class  Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("AudioTale", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 30)),
+        title: Text("AudioTale", style: Theme.of(context).appBarTheme.titleTextStyle),
         centerTitle: true,
-        backgroundColor: Color(0xff10263C),
+        backgroundColor: const Color(0xff10263C),
+        actions: const [Icon(Icons.settings)],
       ),
       body: Center(
-        child: Text("Welcome to the HomePage", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.red),)
+        child: Text("Welcome to the HomePage", style: Theme.of(context).textTheme.bodyLarge)
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
+      bottomNavigationBar: ElevatedButton(onPressed: () {}, child: const Text("Add audio")),
     );
   }
 }
