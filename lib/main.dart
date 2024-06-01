@@ -17,9 +17,40 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-        primaryColor: Color(0xff10263C),
+        primaryColor: const Color(0xFF1499C6),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff10263C)),
+        scaffoldBackgroundColor: const Color(0xff10263C),
         useMaterial3: true,
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+          bodyLarge: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xff10263C),
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFF1499C6),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            textStyle: const TextStyle(
+              fontSize: 18,
+            ),
+          ),
+        ),
       ),
       home: const SplashScreen(),
     );
