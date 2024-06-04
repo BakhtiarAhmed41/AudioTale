@@ -61,6 +61,35 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          fillColor: Color(0xff10263C), // Background color of the input field
+          hintStyle: TextStyle(color: Colors.white70), // Hint text style
+          labelStyle: TextStyle(color: Colors.white), // Label text style
+          errorStyle: TextStyle(color: Colors.redAccent), // Error text style
+            prefixIconColor: Colors.blue,
+            border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white), // Default border color
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white), // Enabled border color
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFF1499C6)), // Focused border color
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.redAccent), // Error border color
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.redAccent), // Focused error border color
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 22.0, horizontal: 16.0), // Padding inside the input field
+        ),
       ),
       home: const SplashScreen(),
     );
