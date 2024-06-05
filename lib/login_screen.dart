@@ -1,5 +1,6 @@
 import 'package:audio_tale/widgets/round_button.dart';
 import 'package:flutter/material.dart';
+import 'signup_screen.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -20,7 +21,7 @@ class _LoginState extends State<Login> {
         child: Column(
           children: [
             const SizedBox(height: 30,),
-            Center(child: Image.asset('assets/AudioTale_logo.png', height: 250, width: 250,)),
+            Center(child: Image.asset('assets/images/AudioTale_logo.png', height: 220, width: 250,)),
             const SizedBox(height: 50,),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -49,6 +50,24 @@ class _LoginState extends State<Login> {
                       hintText: "Password",
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    const Text("Not Registered? ", style: TextStyle(color: Colors.white),),
+                    InkWell(onTap: (){
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => const SignUp()),
+                      );
+                    },
+                        child: const Text('Sign up', style: TextStyle(color: Colors.blue),)),
+                    const Text(' here', style: TextStyle(color: Colors.white)),
+                  ],
                 ),
                 const SizedBox(
                   height: 50,

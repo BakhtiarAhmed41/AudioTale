@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
         backgroundColor: const Color(0xff10263C),
         body: Center(
-          child: Image.asset('assets/AudioTale3.gif'),
+          child: Image.asset('assets/images/AudioTale3.gif'),
         )
     );
   }

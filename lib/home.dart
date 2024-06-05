@@ -50,7 +50,7 @@ class _HomeState extends State<Home> {
                       ],
                     image:const DecorationImage(
                       fit:BoxFit.cover,
-                      image:AssetImage("assets/Classic.jpg"),
+                      image:AssetImage("assets/images/Classic.jpg"),
                       colorFilter: ColorFilter.mode(
                         Colors.black38,
                         BlendMode.darken,
@@ -83,7 +83,7 @@ class _HomeState extends State<Home> {
                       ],
                       image:const DecorationImage(
                         fit:BoxFit.cover,
-                        image:AssetImage("assets/CommunityCreations.jpg"),
+                        image:AssetImage("assets/images/CommunityCreations.jpg"),
                         colorFilter: ColorFilter.mode(
                           Colors.black38,
                           BlendMode.darken,
