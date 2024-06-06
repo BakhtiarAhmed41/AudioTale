@@ -1,5 +1,6 @@
+import 'package:audio_tale/widgets/round_button.dart';
 import 'package:flutter/material.dart';
-
+import 'login_screen.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -9,14 +10,149 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final _formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  var display = true;
+
+  @override
+  void dispose(){
+    super.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(
-        title: const Text("Sign up"),
-      ),
-      body: Center(
-        child: Text("Sign Up Screen", style:  Theme.of(context).textTheme.displayLarge)
+    return PopScope(
+      canPop: true,
+
+      child: Scaffold(
+        appBar: AppBar(
+            title: const Text("SignUp Screen")
+        ),
+
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 30,),
+              Center(child: Image.asset('assets/images/AudioTale_logo.png', height: 220, width: 250,)),
+              const SizedBox(height: 30,),
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: TextFormField(
+                        controller: nameController,
+                        keyboardType: TextInputType.name,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.drive_file_rename_outline),
+                          hintText: "Name",
+                        ),
+                        validator: (value){
+                          if(value!.isEmpty){
+                            return "Enter your name";
+                          }
+                          else{
+                            return null;
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: TextFormField(
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.email),
+                          hintText: "Email",
+                        ),
+                        validator: (value){
+                          if(value!.isEmpty){
+                            return "Enter your email";
+                          }
+                          else{
+                            return null;
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: TextFormField(
+                        controller: passwordController,
+                        keyboardType: TextInputType.visiblePassword,
+                        obscureText: display,
+                        decoration:  InputDecoration(
+                          prefixIcon: const Icon(Icons.lock),
+                          hintText: "Password",
+                          suffixIcon: IconButton(
+                              onPressed: (){
+                                setState(() {
+                                  display = !display;
+                                });
+                              },
+                              icon: const Icon(Icons.remove_red_eye)),
+                        ),
+                        validator: (value){
+                          if(value!.isEmpty){
+                            return "Enter your password";
+                          }
+                          else{
+                            return null;
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        const Text("Already registered? ", style: TextStyle(color: Colors.white),),
+                        InkWell(onTap: (){
+                          Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => const Login()),
+                          );
+                        },
+                            child: const Text('Login', style: TextStyle(color: Colors.blue),)),
+                        const Text(' here', style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                  ],
+                ),
+              ),
+              RoundButton(
+                title: 'Register',
+                onTap: () {
+                  if(_formKey.currentState!.validate()) {
+
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
