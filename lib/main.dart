@@ -1,18 +1,20 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+// import 'package:auth_firebase/firebase_options.dart';
 import 'splash_screen.dart';
 
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: 'apikey',
+      options:
+      const FirebaseOptions(
+        apiKey: 'AIzaSyBH4d5dfJRHIYz_1fR6PW80EMD94bhFcz8',
         appId: 'appId',
         messagingSenderId: 'messagingSenderId',
         projectId: 'projectId',
-        storageBucket: 'storageBucket',   ));
+        storageBucket: 'storageBucket',   )
+  );
   runApp(const MyApp());
 }
 
@@ -67,8 +69,8 @@ class MyApp extends StatelessWidget {
           hintStyle: TextStyle(color: Colors.white70), // Hint text style
           labelStyle: TextStyle(color: Colors.white), // Label text style
           errorStyle: TextStyle(color: Colors.redAccent), // Error text style
-            prefixIconColor: Colors.blue,
-            border: OutlineInputBorder(
+          prefixIconColor: Colors.blue,
+          border: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white), // Default border color
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
           ),
@@ -96,4 +98,3 @@ class MyApp extends StatelessWidget {
     // This is the theme of your application.
   }
 }
-

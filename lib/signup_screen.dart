@@ -1,6 +1,9 @@
+import 'package:audio_tale/home.dart';
 import 'package:audio_tale/widgets/round_button.dart';
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:audio_tale/utils/toast.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -15,6 +18,8 @@ class _SignUpState extends State<SignUp> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   var display = true;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose(){
@@ -46,28 +51,28 @@ class _SignUpState extends State<SignUp> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: TextFormField(
-                        controller: nameController,
-                        keyboardType: TextInputType.name,
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.drive_file_rename_outline),
-                          hintText: "Name",
-                        ),
-                        validator: (value){
-                          if(value!.isEmpty){
-                            return "Enter your name";
-                          }
-                          else{
-                            return null;
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(10.0),
+                    //   child: TextFormField(
+                    //     controller: nameController,
+                    //     keyboardType: TextInputType.name,
+                    //     decoration: const InputDecoration(
+                    //       prefixIcon: Icon(Icons.drive_file_rename_outline),
+                    //       hintText: "Name",
+                    //     ),
+                    //     validator: (value){
+                    //       if(value!.isEmpty){
+                    //         return "Enter your name";
+                    //       }
+                    //       else{
+                    //         return null;
+                    //       }
+                    //     },
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: TextFormField(
@@ -146,7 +151,17 @@ class _SignUpState extends State<SignUp> {
                 title: 'Register',
                 onTap: () {
                   if(_formKey.currentState!.validate()) {
+                    _auth.createUserWithEmailAndPassword(
+                        email: emailController.text.toString(),
+                        password: passwordController.text.toString()).then((value){
+                          toastMesage("Account Created Successfully", Colors.green);
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=> const Home())
+                          );
 
+                    }).onError((error, stackTrace){
+                        toastMesage(error.toString(), Colors.red);
+                    });
                   }
                 },
               ),
