@@ -44,7 +44,7 @@ class _SignUpState extends State<SignUp> {
             children: [
               const SizedBox(height: 30,),
               Center(child: Image.asset('assets/images/AudioTale_logo.png', height: 220, width: 250,)),
-              const SizedBox(height: 30,),
+              const SizedBox(height: 50,),
               Form(
                 key: _formKey,
                 child: Column(
@@ -123,26 +123,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        const Text("Already registered? ", style: TextStyle(color: Colors.white),),
-                        InkWell(onTap: (){
-                          Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => const Login()),
-                          );
-                        },
-                            child: const Text('Login', style: TextStyle(color: Colors.blue),)),
-                        const Text(' here', style: TextStyle(color: Colors.white)),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 30,
+                      height: 60,
                     ),
                   ],
                 ),
@@ -165,6 +146,26 @@ class _SignUpState extends State<SignUp> {
                   }
                 },
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  const Text("Already registered? ", style: TextStyle(color: Colors.white),),
+                  InkWell(onTap: (){
+                    Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Login()),
+                    );
+                  },
+                      child: const Text('Login', style: TextStyle(color: Colors.blue),)),
+                  const Text(' here', style: TextStyle(color: Colors.white)),
+                ],
+              ),
+
             ],
           ),
         ),

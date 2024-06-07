@@ -96,24 +96,24 @@ class _LoginState extends State<Login> {
                     const SizedBox(
                       height: 5,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        const Text("Don't have an account? ", style: TextStyle(color: Colors.white),),
-                        InkWell(onTap: (){
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => const SignUp()),
-                          );
-                        },
-                            child: const Text('Sign up', style: TextStyle(color: Colors.blue),)),
-                        const Text(' here', style: TextStyle(color: Colors.white)),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     const SizedBox(
+                    //       height: 30,
+                    //     ),
+                    //     const Text("Don't have an account? ", style: TextStyle(color: Colors.white),),
+                    //     InkWell(onTap: (){
+                    //       Navigator.push(context,
+                    //           MaterialPageRoute(builder: (context) => const SignUp()),
+                    //       );
+                    //     },
+                    //         child: const Text('Sign up', style: TextStyle(color: Colors.blue),)),
+                    //     const Text(' here', style: TextStyle(color: Colors.white)),
+                    //   ],
+                    // ),
                     const SizedBox(
-                      height: 30,
+                      height: 60,
                     ),
                   ],
                 ),
@@ -126,6 +126,24 @@ class _LoginState extends State<Login> {
                       }
                     },
                   ),
+              SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  const Text("Don't have an account? ", style: TextStyle(color: Colors.white),),
+                  InkWell(onTap: (){
+                    Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const SignUp()),
+                    );
+                  },
+                      child: const Text('Sign up', style: TextStyle(color: Colors.blue),)),
+                  const Text(' here', style: TextStyle(color: Colors.white)),
+                ],
+              ),
+
             ],
           ),
         ),
