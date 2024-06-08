@@ -1,6 +1,8 @@
+import 'package:audio_tale/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'audio_books.dart';
 import 'community_creations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class  Home extends StatefulWidget {
   const Home({super.key});
@@ -10,6 +12,8 @@ class  Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
 
@@ -18,8 +22,15 @@ class _HomeState extends State<Home> {
         title: Text("Welcome to AudioTale", style: Theme.of(context).appBarTheme.titleTextStyle),
         centerTitle: true,
         backgroundColor: const Color(0xff10263C),
-        actions: const [Icon(Icons.account_circle_sharp, size: 30,),
-        SizedBox(width: 10,)],
+        actions:  [IconButton(onPressed: (){
+          auth.signOut().then((value)=>
+            Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const Login())
+          ).onError((error, stackTrace) {
+
+          },));
+        }, icon: const Icon(Icons.logout, size: 30,)),
+        const SizedBox(width: 10,)],
 
       ),
       body:Padding(
