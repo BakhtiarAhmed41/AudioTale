@@ -1,3 +1,4 @@
+import 'package:audio_tale/forgot_password.dart';
 import 'package:audio_tale/home.dart';
 import 'package:audio_tale/utils/toast.dart';
 import 'package:audio_tale/widgets/round_button.dart';
@@ -94,7 +95,7 @@ class _LoginState extends State<Login> {
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Enter email";
+                          return "Enter your email";
                         } else {
                           return null;
                         }
@@ -124,15 +125,20 @@ class _LoginState extends State<Login> {
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Enter Password";
+                          return "Enter your password";
                         } else {
                           return null;
                         }
                       },
                     ),
                   ),
+                  TextButton(onPressed: (){
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (context)=> ForgotPassword()));
+                  },
+                      child: const Text("Forget password?", style: TextStyle(color: Colors.blue)),),
                   const SizedBox(
-                    height: 60,
+                    height: 30,
                   ),
                   RoundButton(
                     title: 'Login',

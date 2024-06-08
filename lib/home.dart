@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'audio_books.dart';
 import 'community_creations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:audio_tale/utils/toast.dart';
 
 class  Home extends StatefulWidget {
   const Home({super.key});
@@ -23,12 +24,14 @@ class _HomeState extends State<Home> {
         centerTitle: true,
         backgroundColor: const Color(0xff10263C),
         actions:  [IconButton(onPressed: (){
-          auth.signOut().then((value)=>
+          auth.signOut().then((value) {
+            toastMesage("Logged out successfully!", Colors.green);
             Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const Login())
           ).onError((error, stackTrace) {
-
-          },));
+                toastMesage(error.toString(), Colors.red);
+          },);
+          });
         }, icon: const Icon(Icons.logout, size: 30,)),
         const SizedBox(width: 10,)],
 
