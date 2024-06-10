@@ -50,9 +50,9 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/AudioTale_logo_foreground.png"
-  adaptive_icon_foreground: "assets/images/AudioTale_logo_foreground.png"
-  adaptive_icon_background: "assets/images/AudioTale_logo_foreground.png"
+#  image_path: "assets/images/AudioTale_logo.png"
+  adaptive_icon_foreground: "assets/images/AudioTale_logo.png"
+  adaptive_icon_background: #ffff
 
 #  image_path_android: "assets/images/AudioTale_logo.png"
 #  image_path_ios: "assets/images/AudioTale_logo.png"
