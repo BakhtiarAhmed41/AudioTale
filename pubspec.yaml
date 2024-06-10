@@ -45,6 +45,20 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/AudioTale_logo_foreground.png"
+  adaptive_icon_foreground: "assets/images/AudioTale_logo_foreground.png"
+  adaptive_icon_background: "assets/images/AudioTale_logo_foreground.png"
+
+#  image_path_android: "assets/images/AudioTale_logo.png"
+#  image_path_ios: "assets/images/AudioTale_logo.png"
+#  android: true # can specify file name here e.g. "ic_launcher"
+#  ios: true # can specify file name here e.g. "My-Launcher-Icon"
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
