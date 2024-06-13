@@ -47,7 +47,7 @@ class _LoginState extends State<Login> {
         if(emailController.text.toString() == "admin@email.com"){
           toastMesage("Logged in as Admin!", Colors.green);
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => const Admin()));
+              context, MaterialPageRoute(builder: (context) =>  Admin()));
         }else{
           toastMesage("Logged in Successfully!", Colors.green);
           Navigator.pushReplacement(
