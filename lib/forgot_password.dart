@@ -54,11 +54,11 @@ class ForgotPassword extends StatelessWidget {
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         auth.sendPasswordResetEmail(email: emailController.text).then((value) {
-                          toastMesage("An email has been sent to you for password reset!", Colors.green);
+                          toastMessage("An email has been sent to you for password reset!", Colors.green);
                           Navigator.pushReplacement(context,
                               MaterialPageRoute(builder: (context) => const Login()));
                         }).onError((error, stackTrace) {
-                          toastMesage("Enter correct email address!", Colors.red);
+                          toastMessage("Enter correct email address!", Colors.red);
                         });
                       }
                     },

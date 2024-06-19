@@ -6,14 +6,15 @@ import 'splash_screen.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  // FirebaseAppCheck.instance.activate(webRecaptchaSiteKey: 'AIzaSyBH4d5dfJRHIYz_1fR6PW80EMD94bhFcz8');
   await Firebase.initializeApp(
       options:
       const FirebaseOptions(
         apiKey: 'AIzaSyBH4d5dfJRHIYz_1fR6PW80EMD94bhFcz8',
         appId: 'appId',
         messagingSenderId: 'messagingSenderId',
-        projectId: 'projectId',
-        storageBucket: 'storageBucket',   )
+        projectId: 'audio-tale',
+        storageBucket: 'audio-tale.appspot.com',   )
   );
   runApp(const MyApp());
 }

@@ -1,7 +1,7 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 
-void toastMesage(String message, Color color){
+void toastMessage(String message, Color color){
   Fluttertoast.showToast(
   msg: message,
   toastLength: Toast.LENGTH_SHORT,

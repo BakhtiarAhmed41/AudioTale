@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "731644264441",
+    "firebase_url": "https://audio-tale-default-rtdb.firebaseio.com",
     "project_id": "audio-tale",
     "storage_bucket": "audio-tale.appspot.com"
   },

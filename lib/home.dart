@@ -25,11 +25,11 @@ class _HomeState extends State<Home> {
         backgroundColor: const Color(0xff10263C),
         actions:  [IconButton(onPressed: (){
           auth.signOut().then((value) {
-            toastMesage("Logged out successfully!", Colors.green);
+            toastMessage("Logged out successfully!", Colors.green);
             Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const Login())
           ).onError((error, stackTrace) {
-                toastMesage(error.toString(), Colors.red);
+                toastMessage(error.toString(), Colors.red);
           },);
           });
         }, icon: const Icon(Icons.logout, size: 30,)),

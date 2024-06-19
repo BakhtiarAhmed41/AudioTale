@@ -45,11 +45,11 @@ class _LoginState extends State<Login> {
           loading = false;
         });
         if(emailController.text.toString() == "admin@email.com"){
-          toastMesage("Logged in as Admin!", Colors.green);
+          toastMessage("Logged in as Admin!", Colors.green);
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) =>  Admin()));
+              context, MaterialPageRoute(builder: (context) =>  AudioUploadPage()));
         }else{
-          toastMesage("Logged in Successfully!", Colors.green);
+          toastMessage("Logged in Successfully!", Colors.green);
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => const Home()));
         }
@@ -58,7 +58,7 @@ class _LoginState extends State<Login> {
         setState(() {
           loading = false;
         });
-        toastMesage(error.toString(), Colors.red);
+        toastMessage(error.toString(), Colors.red);
       });
     }
   }

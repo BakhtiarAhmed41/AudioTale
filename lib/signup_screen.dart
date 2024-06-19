@@ -39,7 +39,7 @@ class _SignUpState extends State<SignUp> {
         setState(() {
           loading = false;
         });
-        toastMesage("Account Created Successfully!", Colors.green);
+        toastMessage("Account Created Successfully!", Colors.green);
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context)=> const Home())
         );
@@ -47,7 +47,7 @@ class _SignUpState extends State<SignUp> {
         setState(() {
           loading = false;
         });
-        toastMesage(error.toString(), Colors.red);
+        toastMessage(error.toString(), Colors.red);
       });
     }
   }

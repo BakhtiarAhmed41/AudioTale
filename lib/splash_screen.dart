@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'admin_screen.dart';
 import 'home.dart';
 import 'login_screen.dart';
 
@@ -22,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
           () => Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const Login(),
+          builder: (context) => AudioUploadPage(),
         ),
       ),
     );
