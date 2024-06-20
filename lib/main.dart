@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 // import 'package:auth_firebase/firebase_options.dart';
 import 'splash_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 void main() async{
@@ -94,8 +95,27 @@ class MyApp extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(vertical: 22.0, horizontal: 16.0), // Padding inside the input field
         ),
       ),
-      home: const SplashScreen(),
+      home:  SplashScreen(),
     );
     // This is the theme of your application.
   }
+}
+
+
+
+
+
+Future<void> requestPermissions() async {
+  if (await Permission.storage.request().isGranted) {
+    // The permission is granted
+  } else if (await Permission.storage.isPermanentlyDenied) {
+    // Open app settings if the permission is permanently denied
+    openAppSettings();
+  }
+}
+
+@override
+void initState() {
+  // super.initState();
+  requestPermissions();
 }

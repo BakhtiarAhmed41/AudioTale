@@ -1,9 +1,12 @@
 import 'package:audio_tale/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'audio_books.dart';
+import 'audiobooks.dart';
 import 'community_creations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:audio_tale/utils/toast.dart';
+
+import 'fictional_stories.dart';
 
 class  Home extends StatefulWidget {
   const Home({super.key});
@@ -45,7 +48,7 @@ class _HomeState extends State<Home> {
             const SizedBox(height:40),
             InkWell(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>const AudioBooks()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> AudiobookScreen()));
               },
               splashColor: Colors.transparent,
               child: Center(
@@ -78,7 +81,7 @@ class _HomeState extends State<Home> {
             ),
             InkWell(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>const CommunityCreations()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> FictionalStoriesScreen()));
               },
               splashColor: Colors.transparent,
               child: Center(

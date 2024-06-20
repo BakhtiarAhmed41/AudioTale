@@ -63,17 +63,13 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
               OutlinedButton.icon(
                 icon: _featureImage == null
                     ? Icon(Icons.image)
-                    : Image.file(
-                    _featureImage!, width: 50, height: 50, fit: BoxFit.cover),
+                    : Image.file(_featureImage!, width: 50, height: 50, fit: BoxFit.cover),
                 label: Text(
-                  _featureImage == null
-                      ? 'Select Feature Image'
-                      : 'Change Feature Image',
+                  _featureImage == null ? 'Select Feature Image' : 'Change Feature Image',
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () async {
-                  final XFile? file = await _imagePicker.pickImage(
-                      source: ImageSource.gallery);
+                  final XFile? file = await _imagePicker.pickImage(source: ImageSource.gallery);
                   setState(() {
                     _featureImage = file != null ? File(file.path) : null;
                   });
@@ -84,20 +80,17 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                 value: _category,
                 dropdownColor: Colors.black,
                 style: TextStyle(color: Colors.white),
-                onChanged: (value) =>
-                    setState(() {
-                      _category = value!;
-                    }),
+                onChanged: (value) => setState(() {
+                  _category = value!;
+                }),
                 items: [
                   DropdownMenuItem(
                     value: 'Audiobook',
-                    child: Text(
-                        'Audiobook', style: TextStyle(color: Colors.white)),
+                    child: Text('Audiobook', style: TextStyle(color: Colors.white)),
                   ),
                   DropdownMenuItem(
                     value: 'Fictional Story',
-                    child: Text('Fictional Story',
-                        style: TextStyle(color: Colors.white)),
+                    child: Text('Fictional Story', style: TextStyle(color: Colors.white)),
                   ),
                 ],
                 decoration: InputDecoration(
@@ -110,10 +103,9 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                 value: _genre,
                 dropdownColor: Colors.black,
                 style: TextStyle(color: Colors.white),
-                onChanged: (value) =>
-                    setState(() {
-                      _genre = value!;
-                    }),
+                onChanged: (value) => setState(() {
+                  _genre = value!;
+                }),
                 items: _genres.map((genre) {
                   return DropdownMenuItem(
                     value: genre,
@@ -129,9 +121,7 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
               OutlinedButton.icon(
                 icon: Icon(Icons.audiotrack),
                 label: Text(
-                  _audioFile == null
-                      ? 'Select Audio File'
-                      : 'Change Audio File',
+                  _audioFile == null ? 'Select Audio File' : 'Change Audio File',
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () async {
@@ -149,11 +139,9 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     await uploadAudio(context);
-
                   }
-                  },
+                },
                 title: 'Upload Audio',
-
               ),
             ],
           ),
@@ -164,14 +152,28 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
 
   Future<void> uploadAudio(BuildContext context) async {
     if (_audioFile == null || _title.isEmpty) {
-      toastMessage(
-          'Audio file or title is missing', Colors.red); // Error message
+      toastMessage('Audio file or title is missing', Colors.red); // Error message
       return;
     }
 
-    final Reference storageRef = _storage.ref().child('audios/$_title');
-    final UploadTask uploadTask = storageRef.putFile(_audioFile!);
     try {
+      setState(() {
+        loading = true;
+      });
+
+      // Upload the feature image first and get the URL
+      String? featureImageUrl;
+      if (_featureImage != null) {
+        featureImageUrl = await _uploadFeatureImage(_featureImage!);
+        if (featureImageUrl == null) {
+          toastMessage('Failed to upload feature image', Colors.red); // Error message
+          return;
+        }
+      }
+
+      // Upload the audio file and get the URL
+      final Reference storageRef = _storage.ref().child('audios/$_title');
+      final UploadTask uploadTask = storageRef.putFile(_audioFile!);
       final TaskSnapshot snapshot = await uploadTask;
       final String audioUrl = await snapshot.ref.getDownloadURL();
       setState(() {
@@ -181,12 +183,10 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
       final DatabaseReference databaseRef = _database.ref();
       final String key = _title; // Use the title as the key
 
-      final DataSnapshot existingStorySnapshot = await databaseRef.child(
-          'fictional-stories').child(key).get();
+      final DataSnapshot existingStorySnapshot = await databaseRef.child('fictional-stories').child(key).get();
       if (existingStorySnapshot.exists) {
         // Ask for confirmation to add new episode
-        final bool addNewEpisode = await _showConfirmationDialog(context,
-            'A story with this title already exists. Do you want to add a new episode to it?');
+        final bool addNewEpisode = await _showConfirmationDialog(context, 'A story with this title already exists. Do you want to add a new episode to it?');
         if (addNewEpisode) {
           await _addNewEpisode(databaseRef, key, audioUrl);
         } else {
@@ -198,7 +198,7 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
         if (_category == 'Audiobook') {
           await databaseRef.child('audiobooks').child(key).set({
             'title': _title,
-            'featureImage': _featureImage != null ? _featureImage!.path : null,
+            'featureImage': featureImageUrl,
             'category': _category,
             'genre': _genre,
             'audioUrl': audioUrl,
@@ -206,7 +206,7 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
         } else if (_category == 'Fictional Story') {
           final Map<String, dynamic> storyData = {
             'title': _title,
-            'featureImage': _featureImage != null ? _featureImage!.path : null,
+            'featureImage': featureImageUrl,
             'genre': _genre,
             'episodes': [
               {
@@ -215,8 +215,7 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
               },
             ],
           };
-          await databaseRef.child('fictional-stories').child(key).set(
-              storyData);
+          await databaseRef.child('fictional-stories').child(key).set(storyData);
         }
       }
 
@@ -225,33 +224,34 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
     } catch (e) {
       toastMessage('Upload failed: $e', Colors.red); // Error message
       print('Upload failed: $e');
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
   }
 
-  Future<bool> _showConfirmationDialog(BuildContext context,
-      String message) async {
+  Future<bool> _showConfirmationDialog(BuildContext context, String message) async {
     return await showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text('Confirmation'),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text('No'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text('Yes'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text('Confirmation'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('No'),
           ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Yes'),
+          ),
+        ],
+      ),
     ) ?? false;
   }
 
-  Future<void> _addNewEpisode(DatabaseReference databaseRef, String key,
-      String audioUrl) async {
+  Future<void> _addNewEpisode(DatabaseReference databaseRef, String key, String audioUrl) async {
     final storyRef = databaseRef.child('fictional-stories').child(key);
     final DataSnapshot snapshot = await storyRef.child('episodes').get();
     List<dynamic> episodes = (snapshot.value as List<dynamic>?)?.toList() ?? [];
@@ -261,5 +261,18 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
       'audioUrl': audioUrl,
     });
     await storyRef.child('episodes').set(episodes);
+  }
+
+  Future<String?> _uploadFeatureImage(File imageFile) async {
+    try {
+      final String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      final Reference storageRef = _storage.ref().child('images/$fileName');
+      final UploadTask uploadTask = storageRef.putFile(imageFile);
+      final TaskSnapshot snapshot = await uploadTask;
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      print('Feature image upload failed: $e');
+      return null;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'admin_screen.dart';
 import 'home.dart';
@@ -17,13 +18,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
     Timer(
       const Duration(seconds: 3),
           () => Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => AudioUploadPage(),
+          builder: (context) => Login(),
         ),
       ),
     );
