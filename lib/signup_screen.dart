@@ -106,7 +106,7 @@ class _SignUpState extends State<SignUp> {
                               display = !display;
                             });
                           },
-                          icon: const Icon(Icons.remove_red_eye),
+                          icon:  Icon(display ? Icons.visibility : Icons.visibility_off, color: Colors.blue,),
                         ),
                       ),
                       validator: (value){

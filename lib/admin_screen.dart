@@ -5,7 +5,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
+
+import 'login_screen.dart';
 
 class AudioUploadPage extends StatefulWidget {
   @override
@@ -32,12 +35,27 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
   final _database = FirebaseDatabase.instance;
   final _storage = FirebaseStorage.instance;
   final ImagePicker _imagePicker = ImagePicker();
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Content Upload'),
+        title: Text("Welcome to AudioTale", style: Theme.of(context).appBarTheme.titleTextStyle),
+        centerTitle: true,
+        backgroundColor: const Color(0xff10263C),
+        actions:  [IconButton(onPressed: (){
+          auth.signOut().then((value) {
+            toastMessage("Logged out successfully!", Colors.green);
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const Login())
+            ).onError((error, stackTrace) {
+              toastMessage(error.toString(), Colors.red);
+            },);
+          });
+        }, icon: const Icon(Icons.logout, size: 30,)),
+          const SizedBox(width: 10,)],
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -135,7 +153,11 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
               ),
               SizedBox(height: 40),
               RoundButton(
+                loading: loading,
                 onTap: () async {
+                  setState(() {
+                    loading = false;
+                  });
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     await uploadAudio(context);
@@ -221,6 +243,7 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
 
       toastMessage('Upload successful', Colors.green); // Success message
       print('Upload successful: $audioUrl');
+      _resetForm();
     } catch (e) {
       toastMessage('Upload failed: $e', Colors.red); // Error message
       print('Upload failed: $e');
@@ -274,5 +297,17 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
       print('Feature image upload failed: $e');
       return null;
     }
+  }
+
+  void _resetForm() {
+    setState(() {
+      _formKey.currentState!.reset();
+      _title = '';
+      _category = 'Audiobook';
+      _genre = 'Mystery';
+      _audioUrl = '';
+      _featureImage = null;
+      _audioFile = null;
+    });
   }
 }

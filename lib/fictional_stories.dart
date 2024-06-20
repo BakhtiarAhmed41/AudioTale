@@ -36,7 +36,7 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Fictional Stories'),
+        title: Text('Community Creations'),
       ),
       body: _stories.isEmpty
           ? Center(child: Text(

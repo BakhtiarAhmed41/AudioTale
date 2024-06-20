@@ -118,9 +118,10 @@ class _LoginState extends State<Login> {
                           onPressed: () {
                             setState(() {
                               display = !display;
+                              // icon:  Icon(Icons.remove_red_eye_outlined);
                             });
                           },
-                          icon: const Icon(Icons.remove_red_eye),
+                          icon:  Icon(display ? Icons.visibility : Icons.visibility_off, color: Colors.blue,),
                         ),
                       ),
                       validator: (value) {
