@@ -90,16 +90,27 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
         ),
       ),
       body: Container(
-        color: Colors.black,
+        color: Color(0xff10263C),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Feature Image
             Padding(
-              padding: const EdgeInsets.only(bottom: 10, top: 20, right: 20, left: 20),
+              padding: const EdgeInsets.only(bottom: 10, top: 30, right: 20, left: 20),
               child: Container(
-                height: 400,
+                height: 350,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: Theme.of(context).primaryColor,
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 5,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ],
                   image: DecorationImage(
                     image: NetworkImage(widget.featureImageUrl),
                     fit: BoxFit.cover,
@@ -109,53 +120,53 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
             ),
             SizedBox(height: 20),
             // Audio Details
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  Text(
-                    widget.title,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
+            Column(
+              children: [
+                Text(
+                  widget.title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
-                  SizedBox(height: 10),
-                  // if (widget.isFictionalStory && widget.episodeNumber != null)
-                  //   Text(
-                  //     '${widget.title}',
-                  //     style: TextStyle(
-                  //       color: Colors.grey,
-                  //       fontSize: 16,
-                  //     ),
-                  //     textAlign: TextAlign.center,
-                  //   ),
-                  SizedBox(height: 10),
-                  Text(
-                    widget.genre,
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 10),
+                // if (widget.isFictionalStory && widget.episodeNumber != null)
+                //   Text(
+                //     '${widget.title}',
+                //     style: TextStyle(
+                //       color: Colors.grey,
+                //       fontSize: 16,
+                //     ),
+                //     textAlign: TextAlign.center,
+                //   ),
+                SizedBox(height: 10),
+                Text(
+                  widget.genre,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
                   ),
-                  SizedBox(height: 20),
-                  // Progress Bar
-                  Slider(
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey,
-                    value: _position.inSeconds.toDouble(),
-                    max: _duration.inSeconds.toDouble(),
-                    onChanged: (value) {
-                      setState(() {
-                        _audioPlayer.seek(Duration(seconds: value.toInt()));
-                      });
-                    },
-                  ),
-                  // Duration Text
-                  Row(
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 10),
+                // Progress Bar
+                Slider(
+                  activeColor: Theme.of(context).primaryColor,
+                  inactiveColor: Colors.white,
+                  value: _position.inSeconds.toDouble(),
+                  max: _duration.inSeconds.toDouble(),
+                  onChanged: (value) {
+                    setState(() {
+                      _audioPlayer.seek(Duration(seconds: value.toInt()));
+                    });
+                  },
+                ),
+                // Duration Text
+                Container(
+                  margin: EdgeInsets.only(left: 20.0, right: 20.0),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -172,10 +183,10 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            SizedBox(height: 40),
+            SizedBox(height: 10),
             // Play/Pause Button
             Center(
               child: IconButton(

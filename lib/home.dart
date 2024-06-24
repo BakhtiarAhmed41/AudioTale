@@ -1,3 +1,5 @@
+// This holds the skeleton (appbar and bottombar) for main screens for easy navigation
+
 import 'package:audio_tale/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'audio_books.dart';
@@ -7,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:audio_tale/utils/toast.dart';
 
 import 'fictional_stories.dart';
+import 'homepage.dart';
 
 class  Home extends StatefulWidget {
   const Home({super.key});
@@ -17,7 +20,7 @@ class  Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final auth = FirebaseAuth.instance;
-  var selectedIndex = 1; // for current page
+  var selectedIndex = 0; // for current page
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +29,10 @@ class _HomeState extends State<Home> {
 
     switch(selectedIndex) {
       case 0:
-        currentPage = AudiobookScreen();
+        currentPage = HomePage();
         break;
       case 1:
-        currentPage = const Home();
+        currentPage = AudiobookScreen();
         break;
       case 2:
         currentPage = FictionalStoriesScreen();
@@ -59,95 +62,7 @@ class _HomeState extends State<Home> {
         }, icon: const Icon(Icons.logout, size: 30,)),],
 
       ),
-      body:Padding(
-        padding:const EdgeInsets.all(10),
-        child: Column(
-          children:[
-            Expanded(
-              flex: 2,
-              child: SizedBox(),
-            ),
-            Expanded(
-              flex: 8,
-              child: Text("Categories", style: Theme.of(context).textTheme.displayLarge, textAlign: TextAlign.center)
-            ),
-            
-            Expanded(
-              flex: 45,
-              child: InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> AudiobookScreen()));
-                },
-                splashColor: Colors.transparent,
-                child: Center(
-                  child: Container(
-                    height:250,
-                    width: 300,
-                    margin: EdgeInsets.all(8.0),
-                    decoration:BoxDecoration(
-                      color:Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 5,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ],
-                      image:const DecorationImage(
-                        fit:BoxFit.cover,
-                        image:AssetImage("assets/images/Classic.jpg"),
-                        colorFilter: ColorFilter.mode(
-                          Colors.black38,
-                          BlendMode.darken,
-                        ),
-                      )
-                    ),
-                    child:Center(child:Padding(padding:const EdgeInsets.all(4),child:Text("AudioBooks",style:Theme.of(context).textTheme.displayLarge))),
-              
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 45,
-              child: InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> FictionalStoriesScreen()));
-                },
-                splashColor: Colors.transparent,
-                child: Center(
-                  child: Container(
-                    height:250,
-                    width: 300,
-                    margin: EdgeInsets.all(10.0),
-                    decoration:BoxDecoration(
-                        color:Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 5,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ],
-                        image:const DecorationImage(
-                          fit:BoxFit.cover,
-                          image:AssetImage("assets/images/CommunityCreations.jpg"),
-                          colorFilter: ColorFilter.mode(
-                            Colors.black38,
-                            BlendMode.darken,
-                          ),
-                        )
-                    ),
-                    child:Center(child:Padding(padding:const EdgeInsets.all(4),child:Text("Community Creations",style:Theme.of(context).textTheme.displayLarge))),
-              
-                  ),
-                ),
-              ),
-            )
-          ]
-        ),
-      ),
-
+      body: currentPage,
 
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
@@ -161,14 +76,20 @@ class _HomeState extends State<Home> {
             backgroundColor: const Color(0xff10263C),
             selectedItemColor: Theme.of(context).primaryColor,
             unselectedItemColor: Colors.white,
+            currentIndex: selectedIndex,
+            onTap: (newIndex) {
+              setState(() {
+                selectedIndex = newIndex;
+              });
+            },
             items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.headset),
-                label: "AudioBooks",
-              ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
                 label: "Home",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.headset),
+                label: "AudioBooks",
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),
