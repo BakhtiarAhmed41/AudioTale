@@ -9,7 +9,7 @@ class CommunityCreations extends StatefulWidget {
 class _CommunityCreationsState extends State<CommunityCreations> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Container();
 
   }
 }

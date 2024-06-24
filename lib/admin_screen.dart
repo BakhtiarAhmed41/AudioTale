@@ -41,9 +41,16 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome to AudioTale", style: Theme.of(context).appBarTheme.titleTextStyle),
+        title: Image.asset("assets/images/Appbar_logo.png"),
         centerTitle: true,
         backgroundColor: const Color(0xff10263C),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: Container(
+            color: Theme.of(context).primaryColor, // Color of the border
+            height: 1.0,
+          ),
+        ),
         actions:  [IconButton(onPressed: (){
           auth.signOut().then((value) {
             toastMessage("Logged out successfully!", Colors.green);
@@ -57,115 +64,117 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
           const SizedBox(width: 10,)],
 
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Title',
-                  labelStyle: TextStyle(color: Colors.white),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter a title';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _title = value!,
-              ),
-              SizedBox(height: 20),
-              OutlinedButton.icon(
-                icon: _featureImage == null
-                    ? Icon(Icons.image)
-                    : Image.file(_featureImage!, width: 50, height: 50, fit: BoxFit.cover),
-                label: Text(
-                  _featureImage == null ? 'Select Feature Image' : 'Change Feature Image',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
                   style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
-                  final XFile? file = await _imagePicker.pickImage(source: ImageSource.gallery);
-                  setState(() {
-                    _featureImage = file != null ? File(file.path) : null;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              DropdownButtonFormField(
-                value: _category,
-                dropdownColor: Colors.black,
-                style: TextStyle(color: Colors.white),
-                onChanged: (value) => setState(() {
-                  _category = value!;
-                }),
-                items: [
-                  DropdownMenuItem(
-                    value: 'Audiobook',
-                    child: Text('Audiobook', style: TextStyle(color: Colors.white)),
+                  decoration: InputDecoration(
+                    labelText: 'Title',
+                    labelStyle: TextStyle(color: Colors.white),
                   ),
-                  DropdownMenuItem(
-                    value: 'Fictional Story',
-                    child: Text('Fictional Story', style: TextStyle(color: Colors.white)),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => _title = value!,
+                ),
+                SizedBox(height: 20),
+                OutlinedButton.icon(
+                  icon: _featureImage == null
+                      ? Icon(Icons.image)
+                      : Image.file(_featureImage!, width: 50, height: 50, fit: BoxFit.cover),
+                  label: Text(
+                    _featureImage == null ? 'Select Feature Image' : 'Change Feature Image',
+                    style: TextStyle(color: Colors.white),
                   ),
-                ],
-                decoration: InputDecoration(
-                  labelText: 'Category',
-                  labelStyle: TextStyle(color: Colors.white),
-                ),
-              ),
-              SizedBox(height: 20),
-              DropdownButtonFormField(
-                value: _genre,
-                dropdownColor: Colors.black,
-                style: TextStyle(color: Colors.white),
-                onChanged: (value) => setState(() {
-                  _genre = value!;
-                }),
-                items: _genres.map((genre) {
-                  return DropdownMenuItem(
-                    value: genre,
-                    child: Text(genre, style: TextStyle(color: Colors.white)),
-                  );
-                }).toList(),
-                decoration: InputDecoration(
-                  labelText: 'Genre',
-                  labelStyle: TextStyle(color: Colors.white),
-                ),
-              ),
-              SizedBox(height: 20),
-              OutlinedButton.icon(
-                icon: Icon(Icons.audiotrack),
-                label: Text(
-                  _audioFile == null ? 'Select Audio File' : 'Change Audio File',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
-                  final result = await FilePicker.platform.pickFiles();
-                  if (result != null && result.files.single.path != null) {
+                  onPressed: () async {
+                    final XFile? file = await _imagePicker.pickImage(source: ImageSource.gallery);
                     setState(() {
-                      _audioFile = File(result.files.single.path!);
+                      _featureImage = file != null ? File(file.path) : null;
                     });
-                  }
-                },
-              ),
-              SizedBox(height: 40),
-              RoundButton(
-                loading: loading,
-                onTap: () async {
-                  setState(() {
-                    loading = false;
-                  });
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    await uploadAudio(context);
-                  }
-                },
-                title: 'Upload Audio',
-              ),
-            ],
+                  },
+                ),
+                SizedBox(height: 20),
+                DropdownButtonFormField(
+                  value: _category,
+                  dropdownColor: Colors.black,
+                  style: TextStyle(color: Colors.white),
+                  onChanged: (value) => setState(() {
+                    _category = value!;
+                  }),
+                  items: [
+                    DropdownMenuItem(
+                      value: 'Audiobook',
+                      child: Text('Audiobook', style: TextStyle(color: Colors.white)),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Fictional Story',
+                      child: Text('Fictional Story', style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                  decoration: InputDecoration(
+                    labelText: 'Category',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                ),
+                SizedBox(height: 20),
+                DropdownButtonFormField(
+                  value: _genre,
+                  dropdownColor: Colors.black,
+                  style: TextStyle(color: Colors.white),
+                  onChanged: (value) => setState(() {
+                    _genre = value!;
+                  }),
+                  items: _genres.map((genre) {
+                    return DropdownMenuItem(
+                      value: genre,
+                      child: Text(genre, style: TextStyle(color: Colors.white)),
+                    );
+                  }).toList(),
+                  decoration: InputDecoration(
+                    labelText: 'Genre',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                ),
+                SizedBox(height: 20),
+                OutlinedButton.icon(
+                  icon: Icon(Icons.audiotrack),
+                  label: Text(
+                    _audioFile == null ? 'Select Audio File' : 'Change Audio File',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    final result = await FilePicker.platform.pickFiles();
+                    if (result != null && result.files.single.path != null) {
+                      setState(() {
+                        _audioFile = File(result.files.single.path!);
+                      });
+                    }
+                  },
+                ),
+                SizedBox(height: 40),
+                RoundButton(
+                  loading: loading,
+                  onTap: () async {
+                    setState(() {
+                      loading = false;
+                    });
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      await uploadAudio(context);
+                    }
+                  },
+                  title: 'Upload Audio',
+                ),
+              ],
+            ),
           ),
         ),
       ),

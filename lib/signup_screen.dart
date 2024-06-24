@@ -56,7 +56,16 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("SignUp Screen"),
+        title: Image.asset("assets/images/Appbar_logo.png"),
+        centerTitle: true,
+        backgroundColor: const Color(0xff10263C),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: Container(
+            color: Theme.of(context).primaryColor, // Color of the border
+            height: 1.0,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -65,7 +74,7 @@ class _SignUpState extends State<SignUp> {
             Center(
               child: Image.asset('assets/images/AudioTale_logo.png', height: 220, width: 250),
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 30),
             Form(
               key: _formKey,
               child: Column(
@@ -90,7 +99,7 @@ class _SignUpState extends State<SignUp> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 15),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: TextFormField(
@@ -118,32 +127,33 @@ class _SignUpState extends State<SignUp> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 60),
+                  Container(
+                    margin: EdgeInsets.all(20.0),
+                    child: RoundButton(
+                      title: 'Sign up',
+                      loading: loading,
+                      onTap: register,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Already have an account? ", style: TextStyle(color: Colors.white)),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Login()),
+                          );
+                        },
+                        child: const Text('Log in', style: TextStyle(color: Colors.blue)),
+                      ),
+                      const Text(' here', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
                 ],
               ),
-            ),
-            RoundButton(
-              title: 'Register',
-              loading: loading,
-              onTap: register,
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 30),
-                const Text("Already registered? ", style: TextStyle(color: Colors.white)),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Login()),
-                    );
-                  },
-                  child: const Text('Login', style: TextStyle(color: Colors.blue)),
-                ),
-                const Text(' here', style: TextStyle(color: Colors.white)),
-              ],
             ),
           ],
         ),

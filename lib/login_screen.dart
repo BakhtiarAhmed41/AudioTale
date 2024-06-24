@@ -66,18 +66,31 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login Screen")),
+      appBar: AppBar(
+        title: Image.asset("assets/images/Appbar_logo.png"),
+        centerTitle: true,
+        backgroundColor: const Color(0xff10263C),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: Container(
+            color: Theme.of(context).primaryColor, // Color of the border
+            height: 1.0,
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 30),
-            Center(
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Center(
                 child: Image.asset(
                   'assets/images/AudioTale_logo.png',
                   height: 220,
                   width: 250,
-                )),
-            const SizedBox(height: 50),
+                ),
+              ),
+            ),
             Form(
               key: _formKey,
               child: Column(
@@ -133,26 +146,24 @@ class _LoginState extends State<Login> {
                       },
                     ),
                   ),
-                  TextButton(onPressed: (){
-                    Navigator.push(context,
-                    MaterialPageRoute(builder: (context)=> ForgotPassword()));
-                  },
-                      child: const Text("Forget password?", style: TextStyle(color: Colors.blue)),),
-                  const SizedBox(
-                    height: 30,
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => ForgotPassword()));
+                    },
+                    child: const Text("Forgot password?", style: TextStyle(color: Colors.blue)),
                   ),
-                  RoundButton(
-                    title: 'Login',
-                    onTap: login,
-                    loading: loading,
+                  Container(
+                    margin: EdgeInsets.all(20.0),
+                    child: RoundButton(
+                      title: 'Log in',
+                      onTap: login,
+                      loading: loading,
+                    ),
                   ),
-                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        height: 30,
-                      ),
                       const Text(
                         "Don't have an account? ",
                         style: TextStyle(color: Colors.white),
@@ -173,6 +184,7 @@ class _LoginState extends State<Login> {
                       const Text(' here', style: TextStyle(color: Colors.white)),
                     ],
                   ),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),

@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFF1499C6),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff10263C)),
         scaffoldBackgroundColor: const Color(0xff10263C),
+        dividerColor: const Color(0xFF1499C6),
         useMaterial3: true,
         textTheme: const TextTheme(
           displayLarge: TextStyle(

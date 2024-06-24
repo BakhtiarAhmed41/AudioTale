@@ -34,11 +34,7 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Community Creations'),
-      ),
-      body: _stories.isEmpty
+    return _stories.isEmpty
           ? Center(child: Text(
         "No Stories Found!", style: TextStyle(color: Colors.white),
       ))
@@ -47,6 +43,7 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
         itemBuilder: (context, index) {
           final story = _stories[index];
           return ExpansionTile(
+            iconColor: Theme.of(context).primaryColor,
             title: Card(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               elevation: 5,
@@ -57,6 +54,12 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
                     alignment: Alignment.center,
                     height: 200,
                     decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 5,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ],
                       borderRadius: BorderRadius.circular(10),
                       image: DecorationImage(
                         image: NetworkImage(story.featureImage),
@@ -70,7 +73,7 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
                     right: 0,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black54,
+                        color: Color(0x801499C6),
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10),
@@ -108,7 +111,6 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
             }).toList(),
           );
         },
-      ),
-    );
+      );
   }
 }
