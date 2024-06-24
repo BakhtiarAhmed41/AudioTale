@@ -70,6 +70,13 @@ class _LoginState extends State<Login> {
         title: Image.asset("assets/images/Appbar_logo.png"),
         centerTitle: true,
         backgroundColor: const Color(0xff10263C),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: Container(
+            color: Theme.of(context).primaryColor, // Color of the border
+            height: 1.0,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

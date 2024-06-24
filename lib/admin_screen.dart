@@ -41,9 +41,16 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome to AudioTale", style: Theme.of(context).appBarTheme.titleTextStyle),
+        title: Image.asset("assets/images/Appbar_logo.png"),
         centerTitle: true,
         backgroundColor: const Color(0xff10263C),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: Container(
+            color: Theme.of(context).primaryColor, // Color of the border
+            height: 1.0,
+          ),
+        ),
         actions:  [IconButton(onPressed: (){
           auth.signOut().then((value) {
             toastMessage("Logged out successfully!", Colors.green);

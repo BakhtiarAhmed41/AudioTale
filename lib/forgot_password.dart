@@ -15,7 +15,16 @@ class ForgotPassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Reset Password"),
+        title: Image.asset("assets/images/Appbar_logo.png"),
+        centerTitle: true,
+        backgroundColor: const Color(0xff10263C),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: Container(
+            color: Theme.of(context).primaryColor, // Color of the border
+            height: 1.0,
+          ),
+        ),
       ),
       body: Column(
         // mainAxisAlignment: MainAxisAlignment.center,

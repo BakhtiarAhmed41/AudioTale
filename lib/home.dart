@@ -17,15 +17,36 @@ class  Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final auth = FirebaseAuth.instance;
+  var selectedIndex = 1; // for current page
 
   @override
   Widget build(BuildContext context) {
+
+    Widget currentPage = const Text("");
+
+    switch(selectedIndex) {
+      case 0:
+        currentPage = AudiobookScreen();
+        break;
+      case 1:
+        currentPage = const Home();
+        break;
+      case 2:
+        currentPage = FictionalStoriesScreen();
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Image.asset("assets/images/Appbar_logo.png"),
         centerTitle: true,
         backgroundColor: const Color(0xff10263C),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: Container(
+            color: Theme.of(context).primaryColor, // Color of the border
+            height: 1.0,
+          ),
+        ),
         actions:  [IconButton(onPressed: (){
           auth.signOut().then((value) {
             toastMessage("Logged out successfully!", Colors.green);
@@ -42,6 +63,10 @@ class _HomeState extends State<Home> {
         padding:const EdgeInsets.all(10),
         child: Column(
           children:[
+            Expanded(
+              flex: 2,
+              child: SizedBox(),
+            ),
             Expanded(
               flex: 8,
               child: Text("Categories", style: Theme.of(context).textTheme.displayLarge, textAlign: TextAlign.center)
@@ -121,8 +146,38 @@ class _HomeState extends State<Home> {
             )
           ]
         ),
-      )
+      ),
 
+
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Divider(
+            color: Theme.of(context).primaryColor,
+            height: 2.0,
+          ),
+          
+          BottomNavigationBar(
+            backgroundColor: const Color(0xff10263C),
+            selectedItemColor: Theme.of(context).primaryColor,
+            unselectedItemColor: Colors.white,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.headset),
+                label: "AudioBooks",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: "Home",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.people),
+                label: "Community",
+              ),
+            ]
+          ),
+        ],
+      )
     );
   }
 }
