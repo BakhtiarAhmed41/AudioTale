@@ -93,7 +93,7 @@ class _HomeState extends State<Home> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),
-                label: "Community",
+                label: "Community Creations",
               ),
             ]
           ),

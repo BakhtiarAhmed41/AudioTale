@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:audio_tale/admin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'admin_screen.dart';
+import 'fictional_stories.dart';
 import 'home.dart';
 import 'login_screen.dart';
 
@@ -15,18 +16,49 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  @override
+  final auth = FirebaseAuth.instance;
   void initState() {
     super.initState();
-    Timer(
-      const Duration(seconds: 3),
-          () => Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Login(),
+
+    final user = auth.currentUser;
+
+
+    if(user != null){
+
+      if(user.email.toString() == "admin@email.com"){
+        Timer(
+          const Duration(seconds: 3),
+              () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AudioUploadPage(),
+            ),
+          ),
+        );
+      }
+      else{Timer(
+        const Duration(seconds: 3),
+            () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Home(),
+          ),
         ),
-      ),
-    );
+      );}
+
+    }
+    else{
+      Timer(
+        const Duration(seconds: 3),
+            () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Login(),
+          ),
+        ),
+      );
+    }
+
   }
 
   Widget build(BuildContext context) {
