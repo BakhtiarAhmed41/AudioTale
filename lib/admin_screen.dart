@@ -1,3 +1,4 @@
+import 'package:audio_tale/firebase_services.dart';
 import 'package:audio_tale/widgets/round_button.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_tale/utils/toast.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
 import 'login_screen.dart';
+import 'models/models.dart';
 
 class AudioUploadPage extends StatefulWidget {
   @override
@@ -79,7 +81,11 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
+                      setState(() {
+                        loading = false;
+                      });
                       return 'Please enter a title';
+
                     }
                     return null;
                   },
@@ -164,7 +170,7 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                   loading: loading,
                   onTap: () async {
                     setState(() {
-                      loading = false;
+                      loading = true;
                     });
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
@@ -184,32 +190,20 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
   Future<void> uploadAudio(BuildContext context) async {
     if (_audioFile == null || _title.isEmpty) {
       toastMessage('Audio file or title is missing', Colors.red); // Error message
+      setState(() {
+        loading = false;
+      });
       return;
     }
 
     try {
-      setState(() {
-        loading = true;
-      });
+      // Upload feature image and audio file concurrently
+      final featureImageUpload = _featureImage != null ? _uploadFeatureImage(_featureImage!) : Future.value(null);
+      final audioFileUpload = _uploadAudioFile(_audioFile!);
 
-      // Upload the feature image first and get the URL
-      String? featureImageUrl;
-      if (_featureImage != null) {
-        featureImageUrl = await _uploadFeatureImage(_featureImage!);
-        if (featureImageUrl == null) {
-          toastMessage('Failed to upload feature image', Colors.red); // Error message
-          return;
-        }
-      }
-
-      // Upload the audio file and get the URL
-      final Reference storageRef = _storage.ref().child('audios/$_title');
-      final UploadTask uploadTask = storageRef.putFile(_audioFile!);
-      final TaskSnapshot snapshot = await uploadTask;
-      final String audioUrl = await snapshot.ref.getDownloadURL();
-      setState(() {
-        _audioUrl = audioUrl;
-      });
+      final results = await Future.wait([featureImageUpload, audioFileUpload]);
+      final featureImageUrl = results[0] as String?;
+      final audioUrl = results[1] as String;
 
       final DatabaseReference databaseRef = _database.ref();
       final String key = _title; // Use the title as the key
@@ -263,38 +257,6 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
     }
   }
 
-  Future<bool> _showConfirmationDialog(BuildContext context, String message) async {
-    return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Confirmation'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text('No'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Yes'),
-          ),
-        ],
-      ),
-    ) ?? false;
-  }
-
-  Future<void> _addNewEpisode(DatabaseReference databaseRef, String key, String audioUrl) async {
-    final storyRef = databaseRef.child('fictional-stories').child(key);
-    final DataSnapshot snapshot = await storyRef.child('episodes').get();
-    List<dynamic> episodes = (snapshot.value as List<dynamic>?)?.toList() ?? [];
-    final int episodeNumber = episodes.length + 1;
-    episodes.add({
-      'title': 'Episode $episodeNumber',
-      'audioUrl': audioUrl,
-    });
-    await storyRef.child('episodes').set(episodes);
-  }
-
   Future<String?> _uploadFeatureImage(File imageFile) async {
     try {
       final String fileName = DateTime.now().millisecondsSinceEpoch.toString();
@@ -308,6 +270,32 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
     }
   }
 
+  Future<String> _uploadAudioFile(File audioFile) async {
+    try {
+      final Reference storageRef = _storage.ref().child('audios/$_title');
+      final UploadTask uploadTask = storageRef.putFile(audioFile);
+      final TaskSnapshot snapshot = await uploadTask;
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      print('Audio file upload failed: $e');
+      throw e;
+    }
+  }
+
+
+
+  Future<void> _addNewEpisode(DatabaseReference databaseRef, String key, String audioUrl) async {
+    final storyRef = databaseRef.child('fictional-stories').child(key);
+    final DataSnapshot snapshot = await storyRef.child('episodes').get();
+    List<dynamic> episodes = (snapshot.value as List<dynamic>?)?.toList() ?? [];
+    final int episodeNumber = episodes.length + 1;
+    episodes.add({
+      'title': 'Episode $episodeNumber',
+      'audioUrl': audioUrl,
+    });
+    await storyRef.child('episodes').set(episodes);
+  }
+
   void _resetForm() {
     setState(() {
       _formKey.currentState!.reset();
@@ -319,4 +307,179 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
       _audioFile = null;
     });
   }
+}
+
+
+class EditAudiobooks extends StatefulWidget {
+  const EditAudiobooks({super.key});
+
+  @override
+  State<EditAudiobooks> createState() => _EditAudiobooksState();
+}
+
+class _EditAudiobooksState extends State<EditAudiobooks> {
+
+  // final _database = FirebaseDatabase.instance;
+  final  _firebaseDatabaseRef = FirebaseDatabase.instance.ref();
+  final FirebaseService _firebaseService = FirebaseService();
+  List<Audiobook> _audiobooks = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAudiobooks();
+  }
+
+  void _fetchAudiobooks() async {
+    List<Audiobook> audiobooks = await _firebaseService.fetchAudiobooks();
+    setState(() {
+      _audiobooks = audiobooks;
+    });
+  }
+
+  Future<void> _deleteAudiobook(String audiobookId) async {
+    if (await _showConfirmationDialog(
+        context, "Do you want to delete this Audiobook?")) {
+      await _firebaseDatabaseRef.child('audiobooks')
+          .child(audiobookId)
+          .remove();
+      toastMessage("Audiobook deleted successfully", Colors.red);
+      setState(() {
+        _audiobooks.removeWhere((audiobook) => audiobook.title == audiobookId);
+      });
+    }
+  }
+  Widget build(BuildContext context) {
+
+      return ListView.separated(
+        itemCount: _audiobooks.length,
+        itemBuilder: (context, index) {
+          return Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text(_audiobooks[index].title.toString(), style: Theme.of(context).textTheme.bodyLarge,),
+                    Text(_audiobooks[index].genre.toString(), style: Theme.of(context).textTheme.bodyMedium,),
+                  ],
+                ),
+              ),
+              SizedBox(width: 50),
+              IconButton(onPressed: (){
+
+              }, icon: Icon(Icons.update), color: Colors.blue),
+              // SizedBox(width: 10),
+              IconButton(onPressed: (){
+                _deleteAudiobook(_audiobooks[index].title.toString());
+              }, icon: Icon(Icons.delete), color: Colors.red)
+            ],
+          );
+        } ,
+        separatorBuilder: (context, index) {
+          return Divider(
+            thickness: 3,
+            color: Theme.of(context).primaryColor,
+          );
+        },
+      );
+    }
+    }
+
+
+
+class EditStories extends StatefulWidget {
+  const EditStories({super.key});
+
+  @override
+  State<EditStories> createState() => _EditStoriesState();
+}
+
+class _EditStoriesState extends State<EditStories> {
+  final  _firebaseDatabaseRef = FirebaseDatabase.instance.ref();
+  final FirebaseService _firebaseService = FirebaseService();
+  List<FictionalStory> _fictionalStories = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchFictionalStories();
+  }
+
+
+  void _fetchFictionalStories() async {
+    List<FictionalStory> stories = await _firebaseService.fetchFictionalStories();
+    setState(() {
+      _fictionalStories = stories;
+    });
+  }
+
+  Future<void> _deleteStory(String storyTitle) async {
+    if (await _showConfirmationDialog(
+        context, "Do you want to delete this Story?")) {
+      await _firebaseDatabaseRef.child('fictional-stories')
+          .child(storyTitle)
+          .remove();
+      toastMessage("Fictional Story deleted successfully", Colors.red);
+      setState(() {
+         _fictionalStories.removeWhere((story) => story.title == storyTitle);
+      });
+    }
+  }
+
+
+  Widget build(BuildContext context) {
+    return ListView.separated(
+        itemCount: _fictionalStories.length,
+        itemBuilder: (context, index) {
+          return Row(
+            children: [
+              Column(
+                children: [
+                  Text(_fictionalStories[index].title.toString(), style: Theme.of(context).textTheme.bodyLarge,),
+                  Text(_fictionalStories[index].genre.toString(), style: Theme.of(context).textTheme.bodySmall,),
+                ],
+              ),
+              SizedBox(width: 50),
+              IconButton(onPressed: (){
+
+              }, icon: Icon(Icons.update), color: Colors.blue),
+              SizedBox(width: 10),
+              IconButton(onPressed: (){
+                _deleteStory(_fictionalStories[index].title.toString());
+              }, icon: Icon(Icons.delete), color: Colors.red),
+            ],
+          );
+        } ,
+        separatorBuilder: (context, index) {
+          return Divider(
+            thickness: 3,
+          );
+        },
+      );
+    }
+  }
+
+
+
+
+Future<bool> _showConfirmationDialog(BuildContext context, String message) async {
+  return await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Are you sure?'),
+      content: Text(message),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text('No'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text('Yes'),
+        ),
+      ],
+    ),
+  ) ?? false;
 }

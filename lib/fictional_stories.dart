@@ -1,9 +1,10 @@
+import 'package:audio_tale/admin_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'audio_player.dart';
 import 'models/models.dart';
+import 'firebase_services.dart';
 
 class FictionalStoriesScreen extends StatefulWidget {
   @override
@@ -11,44 +12,38 @@ class FictionalStoriesScreen extends StatefulWidget {
 }
 
 class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
-  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref().child('fictional-stories');
+  final FirebaseService _firebaseService = FirebaseService();
   List<FictionalStory> _stories = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchFictionalStories();
+    fetchFictionalStories();
   }
 
-  void _fetchFictionalStories() {
-    _databaseRef.onValue.listen((event) {
-      final List<FictionalStory> stories = [];
-      final data = event.snapshot.value as Map<dynamic, dynamic>?; // Handle null case
-      if (data != null) {
-        data.forEach((key, value) {
-          stories.add(FictionalStory.fromSnapshot(event.snapshot.child(key)));
-        });
-      }
-      setState(() {
-        _stories = stories;
-      });
+  void fetchFictionalStories() async {
+    List<FictionalStory> stories = await _firebaseService.fetchFictionalStories();
+    setState(() {
+      _stories = stories;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         title: Text("Fictional Stories"),
+        leading: TextButton(
+          onPressed: (){
+          Navigator.push(context,
+            MaterialPageRoute(builder: (context)=> EditStories()));
+          }, child: Text("Edit", style: TextStyle(
+    fontSize: 16, color: Colors.red
+    ),),
+      ),
       ),
       body: _stories.isEmpty
-          ? Center(
-        child: Text(
-          "No Stories Found!",
-          style: TextStyle(color: Colors.white),
-        ),
-      )
+          ? Center(child: CircularProgressIndicator())
           : ListView.builder(
         itemCount: _stories.length,
         itemBuilder: (context, index) {
@@ -121,7 +116,6 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
         return ListTile(
           title: Text(episode.title, style: TextStyle(color: Colors.white, fontSize: 20)),
           onTap: () {
-            print('Tapped on ${episode.title}');
             Navigator.push(
               context,
               MaterialPageRoute(

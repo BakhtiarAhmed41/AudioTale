@@ -2,9 +2,7 @@
 
 import 'package:audio_tale/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'audio_books.dart';
 import 'audiobooks.dart';
-import 'community_creations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:audio_tale/utils/toast.dart';
 
@@ -93,7 +91,7 @@ class _HomeState extends State<Home> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),
-                label: "Community Creations",
+                label: "Stories",
               ),
             ]
           ),

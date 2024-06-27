@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -112,7 +113,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                     ),
                   ],
                   image: DecorationImage(
-                    image: NetworkImage(widget.featureImageUrl),
+                    image: CachedNetworkImageProvider(widget.featureImageUrl),
                     fit: BoxFit.cover,
                   ),
                 ),

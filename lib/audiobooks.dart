@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'admin_screen.dart';
 import 'audio_player.dart';
 import 'models/models.dart';
+import 'firebase_services.dart';
 
 class AudiobookScreen extends StatefulWidget {
   @override
@@ -11,26 +12,19 @@ class AudiobookScreen extends StatefulWidget {
 }
 
 class _AudiobookScreenState extends State<AudiobookScreen> {
-  final DatabaseReference _databaseRef =
-  FirebaseDatabase.instance.ref().child('audiobooks');
+  final FirebaseService _firebaseService = FirebaseService();
   List<Audiobook> _audiobooks = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchAudiobooks();
+    fetchAudiobooks();
   }
 
-  void _fetchAudiobooks() {
-    _databaseRef.onValue.listen((event) {
-      final List<Audiobook> audiobooks = [];
-      final data = event.snapshot.value as Map<dynamic, dynamic>?;
-      data?.forEach((key, value) {
-        audiobooks.add(Audiobook.fromSnapshot(event.snapshot.child(key)));
-      });
-      setState(() {
-        _audiobooks = audiobooks;
-      });
+  void fetchAudiobooks() async {
+    List<Audiobook> audiobooks = await _firebaseService.fetchAudiobooks();
+    setState(() {
+      _audiobooks = audiobooks;
     });
   }
 
@@ -38,7 +32,24 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
+        leading: TextButton(
+          onPressed: (){
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context)=> EditAudiobooks()));
+          }, child: Text("Edit", style: TextStyle(
+          fontSize: 16, color: Colors.red
+        ),),
+
+        ),
+
         title: Text('Audiobooks'),
+        // actions: [
+        //   TextButton(onPressed: {
+        //     Navigator.push(context,
+        //         MaterialPageRoute(builder: (context)=> EditAudiobooks()))
+        //   }, child: Text("Edit"))
+        // ],
       ),
       body: _audiobooks.isEmpty
           ? Center(child: CircularProgressIndicator())
