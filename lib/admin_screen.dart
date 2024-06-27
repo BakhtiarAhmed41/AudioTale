@@ -1,4 +1,5 @@
 import 'package:audio_tale/firebase_services.dart';
+import 'package:audio_tale/home.dart';
 import 'package:audio_tale/widgets/round_button.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_tale/utils/toast.dart';
@@ -179,6 +180,13 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                   },
                   title: 'Upload Audio',
                 ),
+                SizedBox(
+                  height: 40,
+                ),
+                TextButton(onPressed: (){
+                  Navigator.push(context,
+                  MaterialPageRoute(builder: (context)=> Home()));
+                }, child: Text("Go to Homepage -->", style: Theme.of(context).textTheme.bodyLarge,))
               ],
             ),
           ),

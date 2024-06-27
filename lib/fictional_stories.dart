@@ -1,4 +1,5 @@
 import 'package:audio_tale/admin_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -15,6 +16,10 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
   final FirebaseService _firebaseService = FirebaseService();
   List<FictionalStory> _stories = [];
 
+  final auth = FirebaseAuth.instance;
+
+
+
   @override
   void initState() {
     super.initState();
@@ -28,8 +33,12 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
     });
   }
 
+
   @override
+
   Widget build(BuildContext context) {
+    final user = auth.currentUser;
+    if (user?.email.toString() == "admin@email.com"){
     return Scaffold(
       appBar: AppBar(
         title: Text("Fictional Stories"),
@@ -51,7 +60,25 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
           return _buildStoryCard(context, story);
         },
       ),
-    );
+    );}
+    else{
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Fictional Stories"),
+
+        ),
+        body: _stories.isEmpty
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+          itemCount: _stories.length,
+          itemBuilder: (context, index) {
+            final story = _stories[index];
+            return _buildStoryCard(context, story);
+          },
+        ),
+      );}
+
+  }
   }
 
   Widget _buildStoryCard(BuildContext context, FictionalStory story) {
@@ -134,4 +161,4 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
       }).toList(),
     );
   }
-}
+
