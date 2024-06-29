@@ -15,10 +15,11 @@ class FictionalStoriesScreen extends StatefulWidget {
 class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
   final FirebaseService _firebaseService = FirebaseService();
   List<FictionalStory> _stories = [];
+  List<FictionalStory> _searchedStories = [];
+  TextEditingController _searchController = TextEditingController();
+  bool _isSearching = false;
 
   final auth = FirebaseAuth.instance;
-
-
 
   @override
   void initState() {
@@ -33,9 +34,17 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
     });
   }
 
+  void searchStories(String query) {
+    _searchedStories.clear();
+    _stories.forEach((story) {
+      if (story.title.toLowerCase().contains(query.toLowerCase())) {
+        _searchedStories.add(story);
+      }
+    });
+    setState(() {});
+  }
 
   @override
-
   Widget build(BuildContext context) {
     final user = auth.currentUser;
     if (user?.email.toString() == "admin@email.com"){
@@ -60,25 +69,75 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
           return _buildStoryCard(context, story);
         },
       ),
+    );} else {
+    return Scaffold(
+      appBar: AppBar(
+        title: _isSearching
+            ? TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: "Search Stories...",
+                  hintStyle: TextStyle(color: Colors.white),
+                  border: InputBorder.none,
+                ),
+                style: TextStyle(color: Colors.white),
+                onChanged: (query) {
+                  searchStories(query);
+                },
+              )
+            : Text("Fictional Stories"),
+        leading: _isSearching
+            ? IconButton(
+                icon: Icon(Icons.cancel),
+                onPressed: () {
+                  setState(() {
+                    _isSearching = false;
+                    _searchController.clear();
+                    _searchedStories.clear();
+                  });
+                },
+              )
+            : (user?.email.toString() == "admin@email.com"
+                ? TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditStories()));
+                    },
+                    child: Text(
+                      "Edit",
+                      style: TextStyle(fontSize: 16, color: Colors.red),
+                    ),
+                  )
+                : SizedBox()),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              setState(() {
+                _isSearching = true;
+              });
+            },
+          ),
+        ],
+      ),
+      body: _isSearching
+          ? _buildSearchResults()
+          : (_stories.isEmpty
+              ? Center(child: CircularProgressIndicator())
+              : _buildStoriesList(_stories)),
     );}
-    else{
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Fictional Stories"),
-
-        ),
-        body: _stories.isEmpty
-            ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
-          itemCount: _stories.length,
-          itemBuilder: (context, index) {
-            final story = _stories[index];
-            return _buildStoryCard(context, story);
-          },
-        ),
-      );}
-
   }
+
+  Widget _buildStoriesList(List<FictionalStory> stories) {
+    return ListView.builder(
+      itemCount: stories.length,
+      itemBuilder: (context, index) {
+        final story = stories[index];
+        return _buildStoryCard(context, story);
+      },
+    );
   }
 
   Widget _buildStoryCard(BuildContext context, FictionalStory story) {
@@ -123,7 +182,7 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
               right: 0,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color(0x801499C6),
+                  color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10),
                     bottomRight: Radius.circular(10),
@@ -162,3 +221,9 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
     );
   }
 
+  Widget _buildSearchResults() {
+    return _searchedStories.isEmpty
+        ? Center(child: Text("No results found"))
+        : _buildStoriesList(_searchedStories);
+  }
+}

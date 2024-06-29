@@ -1,6 +1,5 @@
 // This holds the skeleton (appbar and bottombar) for main screens for easy navigation
 
-import 'package:audio_tale/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'audiobooks.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,8 +7,9 @@ import 'package:audio_tale/utils/toast.dart';
 
 import 'fictional_stories.dart';
 import 'homepage.dart';
+import 'login_screen.dart';
 
-class  Home extends StatefulWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
@@ -27,7 +27,11 @@ class _HomeState extends State<Home> {
 
     switch(selectedIndex) {
       case 0:
-        currentPage = HomePage();
+        currentPage = HomePage(onNavigate: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        });
         break;
       case 1:
         currentPage = AudiobookScreen();
