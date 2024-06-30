@@ -189,9 +189,21 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
                   ),
                 ),
                 padding: EdgeInsets.all(10),
-                child: Text(
-                  story.title,
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      story.title,
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+
+                    ),
+
+                    Text(
+                      story.genre,
+                      style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold ),
+                    ),
+
+                  ],
                 ),
               ),
             ),

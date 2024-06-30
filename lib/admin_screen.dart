@@ -196,8 +196,18 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
   }
 
   Future<void> uploadAudio(BuildContext context) async {
-    if (_audioFile == null || _title.isEmpty) {
-      toastMessage('Audio file or title is missing', Colors.red); // Error message
+    if (_audioFile == null || _title.isEmpty || _featureImage==null) {
+      if(_audioFile == null){
+        toastMessage('Audio file is missing', Colors.red);
+      }
+      else if(_featureImage == null){
+        toastMessage('Feature Image is missing', Colors.red);
+      }
+      else {
+        toastMessage('Feature Image is missing', Colors.red);
+      }
+
+       // Error message
       setState(() {
         loading = false;
       });
@@ -205,7 +215,7 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
     }
 
     try {
-      // Upload feature image and audio file concurrently
+
       final featureImageUpload = _featureImage != null ? _uploadFeatureImage(_featureImage!) : Future.value(null);
       final audioFileUpload = _uploadAudioFile(_audioFile!);
 
@@ -364,24 +374,34 @@ class _EditAudiobooksState extends State<EditAudiobooks> {
         itemCount: _audiobooks.length,
         itemBuilder: (context, index) {
           return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Column(
+                child: Row(
                   children: [
-                    Text(_audiobooks[index].title.toString(), style: Theme.of(context).textTheme.bodyLarge,),
-                    Text(_audiobooks[index].genre.toString(), style: Theme.of(context).textTheme.bodyMedium,),
+                    Column(
+                      children: [
+                        Text(_audiobooks[index].title.toString(), style: Theme.of(context).textTheme.bodyLarge,),
+                        // Text(_audiobooks[index].genre.toString(), style: Theme.of(context).textTheme.bodyMedium,),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              SizedBox(width: 50),
-              IconButton(onPressed: (){
+              Row(
+                children: [
+                  SizedBox(width: 50),
+                  IconButton(onPressed: (){
 
-              }, icon: Icon(Icons.update), color: Colors.blue),
-              // SizedBox(width: 10),
-              IconButton(onPressed: (){
-                _deleteAudiobook(_audiobooks[index].title.toString());
-              }, icon: Icon(Icons.delete), color: Colors.red)
+                  }, icon: Icon(Icons.update), color: Colors.blue),
+                  // SizedBox(width: 10),
+                  IconButton(onPressed: (){
+                    _deleteAudiobook(_audiobooks[index].title.toString());
+                  }, icon: Icon(Icons.delete), color: Colors.red)
+                ],
+              ),
             ],
           );
         } ,
@@ -437,26 +457,42 @@ class _EditStoriesState extends State<EditStories> {
   }
 
 
+
   Widget build(BuildContext context) {
-    return ListView.separated(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Update and Delete Content"
+        ),
+      ),
+      body: ListView.separated(
         itemCount: _fictionalStories.length,
         itemBuilder: (context, index) {
           return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+
               Column(
                 children: [
+
                   Text(_fictionalStories[index].title.toString(), style: Theme.of(context).textTheme.bodyLarge,),
-                  Text(_fictionalStories[index].genre.toString(), style: Theme.of(context).textTheme.bodySmall,),
                 ],
               ),
               SizedBox(width: 50),
-              IconButton(onPressed: (){
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(onPressed: (){
 
-              }, icon: Icon(Icons.update), color: Colors.blue),
+                  }, icon: Icon(Icons.edit), color: Colors.blue),
               SizedBox(width: 10),
               IconButton(onPressed: (){
                 _deleteStory(_fictionalStories[index].title.toString());
               }, icon: Icon(Icons.delete), color: Colors.red),
+                ],
+              ),
             ],
           );
         } ,
@@ -465,8 +501,9 @@ class _EditStoriesState extends State<EditStories> {
             thickness: 3,
           );
         },
-      );
-    }
+      )
+    );
+  }
   }
 
 
@@ -476,8 +513,8 @@ Future<bool> _showConfirmationDialog(BuildContext context, String message) async
   return await showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text('Are you sure?'),
-      content: Text(message),
+      title: Text(message, style: TextStyle(fontSize: 15),),
+      // content: Text(message),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),

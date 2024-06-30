@@ -48,7 +48,11 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(
             color: Colors.white,
             fontSize: 13,
-          )
+          ),
+          bodySmall: TextStyle(
+            color: Colors.white,
+            fontSize: 11,
+          ),
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xff10263C),
