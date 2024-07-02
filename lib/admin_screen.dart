@@ -26,6 +26,7 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
   late String _audioUrl;
   File? _featureImage, _audioFile;
   bool loading = false;
+  double _uploadProgress = 0.0;
 
   final List<String> _genres = [
     'Thriller',
@@ -198,6 +199,21 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                   },
                   title: 'Upload Audio',
                 ),
+                if (loading)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40.0),
+                    child: Column(
+                      children: [
+                        LinearProgressIndicator(
+                          value: _uploadProgress,
+                          backgroundColor: Colors.grey,
+                          color: Colors.green,
+                        ),
+                        SizedBox(height: 10),
+                        Text('${(_uploadProgress * 100).toStringAsFixed(0)}%', style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  ),
                 SizedBox(
                   height: 40,
                 ),
@@ -297,19 +313,55 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
   }
 
 
-  Future<String?> _uploadFeatureImage(File file) async {
-    final featureImageRef =
-    _storage.ref().child('featureImages/${file.uri.pathSegments.last}');
-    await featureImageRef.putFile(file);
-    return await featureImageRef.getDownloadURL();
+  // Future<String?> _uploadFeatureImage(File file) async {
+  //   final featureImageRef =
+  //   _storage.ref().child('featureImages/${file.uri.pathSegments.last}');
+  //   await featureImageRef.putFile(file);
+  //   return await featureImageRef.getDownloadURL();
+  // }
+
+  Future<String?> _uploadFeatureImage(File imageFile) async {
+    try {
+      final storageRef = _storage.ref().child('featureImages/${imageFile.uri.pathSegments.last}');
+      final uploadTask = storageRef.putFile(imageFile);
+
+      final snapshot = await uploadTask.whenComplete(() => null);
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      toastMessage(e.toString(), Colors.red);
+      return null;
+    }
   }
 
-  Future<String> _uploadAudioFile(File file) async {
-    final audioFileRef =
-    _storage.ref().child('audioFiles/${file.uri.pathSegments.last}');
-    await audioFileRef.putFile(file);
-    return audioFileRef.getDownloadURL();
+
+
+  // Future<String> _uploadAudioFile(File file) async {
+  //   final audioFileRef =
+  //   _storage.ref().child('audioFiles/${file.uri.pathSegments.last}');
+  //   await audioFileRef.putFile(file);
+  //   return audioFileRef.getDownloadURL();
+  // }
+
+  Future<String> _uploadAudioFile(File audioFile) async {
+    try {
+      final storageRef = _storage.ref().child('audioFiles/${audioFile.uri.pathSegments.last}');
+      final uploadTask = storageRef.putFile(audioFile);
+
+      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+        setState(() {
+          _uploadProgress = snapshot.bytesTransferred / snapshot.totalBytes;
+        });
+      });
+
+      final snapshot = await uploadTask.whenComplete(() => null);
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      toastMessage(e.toString(), Colors.red);
+      throw e;
+    }
   }
+
+
 
   Future<void> _addNewEpisode(DatabaseReference databaseRef, String key,
       String audioUrl) async {
