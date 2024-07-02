@@ -76,13 +76,13 @@ class MyApp extends StatelessWidget {
         ),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
-          fillColor: Color(0xff10263C), // Background color of the input field
-          hintStyle: TextStyle(color: Colors.white70), // Hint text style
-          labelStyle: TextStyle(color: Colors.white), // Label text style
-          errorStyle: TextStyle(color: Colors.redAccent), // Error text style
+          fillColor: Color(0xff10263C),
+          hintStyle: TextStyle(color: Colors.white70),
+          labelStyle: TextStyle(color: Colors.white),
+          errorStyle: TextStyle(color: Colors.redAccent),
           prefixIconColor: Colors.blue,
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white), // Default border color
+            borderSide: BorderSide(color: Colors.white),
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
           ),
           enabledBorder: OutlineInputBorder(

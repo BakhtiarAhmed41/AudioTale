@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
-
 import 'login_screen.dart';
 import 'models/models.dart';
 
@@ -50,22 +49,27 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(4.0),
           child: Container(
-            color: Theme.of(context).primaryColor, // Color of the border
+            color: Theme.of(context).primaryColor,
             height: 1.0,
           ),
         ),
-        actions:  [IconButton(onPressed: (){
-          auth.signOut().then((value) {
-            toastMessage("Logged out successfully!", Colors.green);
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const Login())
-            ).onError((error, stackTrace) {
-              toastMessage(error.toString(), Colors.red);
-            },);
-          });
-        }, icon: const Icon(Icons.logout, size: 30,)),
-          const SizedBox(width: 10,)],
-
+        actions: [
+          IconButton(
+            onPressed: () {
+              auth.signOut().then((value) {
+                toastMessage("Logged out successfully!", Colors.green);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Login()),
+                ).onError((error, stackTrace) {
+                  toastMessage(error.toString(), Colors.red);
+                });
+              });
+            },
+            icon: const Icon(Icons.logout, size: 30),
+          ),
+          const SizedBox(width: 10),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -86,7 +90,6 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                         loading = false;
                       });
                       return 'Please enter a title';
-
                     }
                     return null;
                   },
@@ -96,15 +99,24 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                 OutlinedButton.icon(
                   icon: _featureImage == null
                       ? Icon(Icons.image)
-                      : Image.file(_featureImage!, width: 50, height: 50, fit: BoxFit.cover),
+                      : Image.file(
+                    _featureImage!,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
                   label: Text(
-                    _featureImage == null ? 'Select Feature Image' : 'Change Feature Image',
+                    _featureImage == null
+                        ? 'Select Feature Image'
+                        : 'Change Feature Image',
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () async {
-                    final XFile? file = await _imagePicker.pickImage(source: ImageSource.gallery);
+                    final XFile? file = await _imagePicker.pickImage(
+                        source: ImageSource.gallery);
                     setState(() {
-                      _featureImage = file != null ? File(file.path) : null;
+                      _featureImage =
+                      file != null ? File(file.path) : null;
                     });
                   },
                 ),
@@ -119,11 +131,13 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                   items: [
                     DropdownMenuItem(
                       value: 'Audiobook',
-                      child: Text('Audiobook', style: TextStyle(color: Colors.white)),
+                      child: Text('Audiobook',
+                          style: TextStyle(color: Colors.white)),
                     ),
                     DropdownMenuItem(
                       value: 'Fictional Story',
-                      child: Text('Fictional Story', style: TextStyle(color: Colors.white)),
+                      child: Text('Fictional Story',
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ],
                   decoration: InputDecoration(
@@ -142,7 +156,8 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                   items: _genres.map((genre) {
                     return DropdownMenuItem(
                       value: genre,
-                      child: Text(genre, style: TextStyle(color: Colors.white)),
+                      child: Text(genre,
+                          style: TextStyle(color: Colors.white)),
                     );
                   }).toList(),
                   decoration: InputDecoration(
@@ -154,7 +169,9 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                 OutlinedButton.icon(
                   icon: Icon(Icons.audiotrack),
                   label: Text(
-                    _audioFile == null ? 'Select Audio File' : 'Change Audio File',
+                    _audioFile == null
+                        ? 'Select Audio File'
+                        : 'Change Audio File',
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () async {
@@ -183,10 +200,15 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
                 SizedBox(
                   height: 40,
                 ),
-                TextButton(onPressed: (){
-                  Navigator.push(context,
-                  MaterialPageRoute(builder: (context)=> Home()));
-                }, child: Text("Go to Homepage -->", style: Theme.of(context).textTheme.bodyLarge,))
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Home()));
+                    },
+                    child: Text(
+                      "Go to Homepage -->",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ))
               ],
             ),
           ),
@@ -196,18 +218,16 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
   }
 
   Future<void> uploadAudio(BuildContext context) async {
-    if (_audioFile == null || _title.isEmpty || _featureImage==null) {
-      if(_audioFile == null){
+    if (_audioFile == null || _title.isEmpty || _featureImage == null) {
+      if (_audioFile == null) {
         toastMessage('Audio file is missing', Colors.red);
-      }
-      else if(_featureImage == null){
+      } else if (_featureImage == null) {
         toastMessage('Feature Image is missing', Colors.red);
-      }
-      else {
+      } else {
         toastMessage('Feature Image is missing', Colors.red);
       }
 
-       // Error message
+      // Error message
       setState(() {
         loading = false;
       });
@@ -215,8 +235,9 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
     }
 
     try {
-
-      final featureImageUpload = _featureImage != null ? _uploadFeatureImage(_featureImage!) : Future.value(null);
+      final featureImageUpload = _featureImage != null
+          ? _uploadFeatureImage(_featureImage!)
+          : Future.value(null);
       final audioFileUpload = _uploadAudioFile(_audioFile!);
 
       final results = await Future.wait([featureImageUpload, audioFileUpload]);
@@ -226,19 +247,16 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
       final DatabaseReference databaseRef = _database.ref();
       final String key = _title; // Use the title as the key
 
-      final DataSnapshot existingStorySnapshot = await databaseRef.child('fictional-stories').child(key).get();
-      if (existingStorySnapshot.exists) {
-        // Ask for confirmation to add new episode
-        final bool addNewEpisode = await _showConfirmationDialog(context, 'A story with this title already exists. Do you want to add a new episode to it?');
-        if (addNewEpisode) {
-          await _addNewEpisode(databaseRef, key, audioUrl);
-        } else {
-          toastMessage('Upload canceled', Colors.red); // Cancel message
+      if (_category == 'Audiobook') {
+        final DataSnapshot existingAudiobookSnapshot =
+        await databaseRef.child('audiobooks').child(key).get();
+        if (existingAudiobookSnapshot.exists) {
+          toastMessage('An audiobook with this title already exists', Colors.red);
+          setState(() {
+            loading = false;
+          });
           return;
-        }
-      } else {
-        // New story
-        if (_category == 'Audiobook') {
+        } else {
           await databaseRef.child('audiobooks').child(key).set({
             'title': _title,
             'featureImage': featureImageUrl,
@@ -246,81 +264,92 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
             'genre': _genre,
             'audioUrl': audioUrl,
           });
-        } else if (_category == 'Fictional Story') {
+        }
+      } else if (_category == 'Fictional Story') {
+        final DataSnapshot existingStorySnapshot =
+        await databaseRef.child('fictional-stories').child(key).get();
+        if (existingStorySnapshot.exists) {
+          final bool addNewEpisode = await _showConfirmationDialog(context,
+              'A story with this title already exists. Do you want to add a new episode to it?');
+          if (addNewEpisode) {
+            await _addNewEpisode(databaseRef, key, audioUrl);
+          } else {
+            toastMessage('Upload canceled', Colors.red); // Cancel message
+            setState(() {
+              loading = false;
+            });
+            return;
+          }
+        } else {
           final Map<String, dynamic> storyData = {
             'title': _title,
             'featureImage': featureImageUrl,
+            'category': _category,
             'genre': _genre,
-            'episodes': [
-              {
-                'title': 'Episode 1',
-                'audioUrl': audioUrl,
-              },
-            ],
+            'episodes': {
+              '1': {'audioUrl': audioUrl, 'episodeTitle': 'Episode 1'},
+            },
           };
           await databaseRef.child('fictional-stories').child(key).set(storyData);
         }
       }
 
-      toastMessage('Upload successful', Colors.green); // Success message
-      print('Upload successful: $audioUrl');
-      _resetForm();
-    } catch (e) {
-      toastMessage('Upload failed: $e', Colors.red); // Error message
-      print('Upload failed: $e');
-    } finally {
+      toastMessage('Audio uploaded successfully', Colors.green);
       setState(() {
         loading = false;
+        _resetForm();
       });
-    }
-  }
-
-  Future<String?> _uploadFeatureImage(File imageFile) async {
-    try {
-      final String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      final Reference storageRef = _storage.ref().child('images/$fileName');
-      final UploadTask uploadTask = storageRef.putFile(imageFile);
-      final TaskSnapshot snapshot = await uploadTask;
-      return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      print('Feature image upload failed: $e');
-      return null;
-    }
-  }
+      setState(() {
+        loading = false;
 
-  Future<String> _uploadAudioFile(File audioFile) async {
-    try {
-      final Reference storageRef = _storage.ref().child('audios/$_title');
-      final UploadTask uploadTask = storageRef.putFile(audioFile);
-      final TaskSnapshot snapshot = await uploadTask;
-      return await snapshot.ref.getDownloadURL();
-    } catch (e) {
-      print('Audio file upload failed: $e');
-      throw e;
+      });
+      toastMessage('Failed to upload audio: $e', Colors.red);
     }
   }
 
 
+  // F
+  Future<String?> _uploadFeatureImage(File file) async {
+    final featureImageRef =
+    _storage.ref().child('featureImages/${file.uri.pathSegments.last}');
+    await featureImageRef.putFile(file);
+    return await featureImageRef.getDownloadURL();
+  }
 
-  Future<void> _addNewEpisode(DatabaseReference databaseRef, String key, String audioUrl) async {
-    final storyRef = databaseRef.child('fictional-stories').child(key);
-    final DataSnapshot snapshot = await storyRef.child('episodes').get();
-    List<dynamic> episodes = (snapshot.value as List<dynamic>?)?.toList() ?? [];
-    final int episodeNumber = episodes.length + 1;
-    episodes.add({
-      'title': 'Episode $episodeNumber',
+  Future<String> _uploadAudioFile(File file) async {
+    final audioFileRef =
+    _storage.ref().child('audioFiles/${file.uri.pathSegments.last}');
+    await audioFileRef.putFile(file);
+    return audioFileRef.getDownloadURL();
+  }
+
+  Future<void> _addNewEpisode(DatabaseReference databaseRef, String key,
+      String audioUrl) async {
+    final episodesRef =
+    databaseRef.child('fictional-stories').child(key).child('episodes');
+    final DataSnapshot episodesSnapshot = await episodesRef.get();
+    final List<dynamic> episodes = List<dynamic>.from(episodesSnapshot.value as List<dynamic>? ?? []);
+
+    final int nextEpisodeNumber = episodes.length + 1;
+    final newEpisodeTitle = 'Episode $nextEpisodeNumber';
+    final newEpisode = {
+      'title': newEpisodeTitle,
       'audioUrl': audioUrl,
-    });
-    await storyRef.child('episodes').set(episodes);
+    };
+
+    episodes.add(newEpisode);
+    await episodesRef.set(episodes);
+    // toastMessage('New episode added successfully', Colors.green);
   }
+
 
   void _resetForm() {
+    _formKey.currentState!.reset();
     setState(() {
-      _formKey.currentState!.reset();
       _title = '';
       _category = 'Audiobook';
       _genre = 'Mystery';
-      _audioUrl = '';
       _featureImage = null;
       _audioFile = null;
     });
@@ -370,50 +399,50 @@ class _EditAudiobooksState extends State<EditAudiobooks> {
   }
   Widget build(BuildContext context) {
 
-      return ListView.separated(
-        itemCount: _audiobooks.length,
-        itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return ListView.separated(
+      itemCount: _audiobooks.length,
+      itemBuilder: (context, index) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Column(
-                      children: [
-                        Text(_audiobooks[index].title.toString(), style: Theme.of(context).textTheme.bodyLarge,),
-                        // Text(_audiobooks[index].genre.toString(), style: Theme.of(context).textTheme.bodyMedium,),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
                 children: [
-                  SizedBox(width: 50),
-                  IconButton(onPressed: (){
-
-                  }, icon: Icon(Icons.update), color: Colors.blue),
-                  // SizedBox(width: 10),
-                  IconButton(onPressed: (){
-                    _deleteAudiobook(_audiobooks[index].title.toString());
-                  }, icon: Icon(Icons.delete), color: Colors.red)
+                  Column(
+                    children: [
+                      Text(_audiobooks[index].title.toString(), style: Theme.of(context).textTheme.bodyLarge,),
+                      // Text(_audiobooks[index].genre.toString(), style: Theme.of(context).textTheme.bodyMedium,),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          );
-        } ,
-        separatorBuilder: (context, index) {
-          return Divider(
-            thickness: 3,
-            color: Theme.of(context).primaryColor,
-          );
-        },
-      );
-    }
-    }
+            ),
+            Row(
+              children: [
+                SizedBox(width: 50),
+                IconButton(onPressed: (){
+
+                }, icon: Icon(Icons.update), color: Colors.blue),
+                // SizedBox(width: 10),
+                IconButton(onPressed: (){
+                  _deleteAudiobook(_audiobooks[index].title.toString());
+                }, icon: Icon(Icons.delete), color: Colors.red)
+              ],
+            ),
+          ],
+        );
+      } ,
+      separatorBuilder: (context, index) {
+        return Divider(
+          thickness: 3,
+          color: Theme.of(context).primaryColor,
+        );
+      },
+    );
+  }
+}
 
 
 
@@ -451,7 +480,7 @@ class _EditStoriesState extends State<EditStories> {
           .remove();
       toastMessage("Fictional Story deleted successfully", Colors.red);
       setState(() {
-         _fictionalStories.removeWhere((story) => story.title == storyTitle);
+        _fictionalStories.removeWhere((story) => story.title == storyTitle);
       });
     }
   }
@@ -460,51 +489,51 @@ class _EditStoriesState extends State<EditStories> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Update and Delete Content"
+        appBar: AppBar(
+          title: Text(
+              "Update and Delete Content"
+          ),
         ),
-      ),
-      body: ListView.separated(
-        itemCount: _fictionalStories.length,
-        itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+        body: ListView.separated(
+          itemCount: _fictionalStories.length,
+          itemBuilder: (context, index) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
 
-              Column(
-                children: [
+                Column(
+                  children: [
 
-                  Text(_fictionalStories[index].title.toString(), style: Theme.of(context).textTheme.bodyLarge,),
-                ],
-              ),
-              SizedBox(width: 50),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(onPressed: (){
+                    Text(_fictionalStories[index].title.toString(), style: Theme.of(context).textTheme.bodyLarge,),
+                  ],
+                ),
+                SizedBox(width: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(onPressed: (){
 
-                  }, icon: Icon(Icons.edit), color: Colors.blue),
-              SizedBox(width: 10),
-              IconButton(onPressed: (){
-                _deleteStory(_fictionalStories[index].title.toString());
-              }, icon: Icon(Icons.delete), color: Colors.red),
-                ],
-              ),
-            ],
-          );
-        } ,
-        separatorBuilder: (context, index) {
-          return Divider(
-            thickness: 3,
-          );
-        },
-      )
+                    }, icon: Icon(Icons.edit), color: Colors.blue),
+                    SizedBox(width: 10),
+                    IconButton(onPressed: (){
+                      _deleteStory(_fictionalStories[index].title.toString());
+                    }, icon: Icon(Icons.delete), color: Colors.red),
+                  ],
+                ),
+              ],
+            );
+          } ,
+          separatorBuilder: (context, index) {
+            return Divider(
+              thickness: 3,
+            );
+          },
+        )
     );
   }
-  }
+}
 
 
 
