@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
+
 import 'login_screen.dart';
 import 'models/models.dart';
 
@@ -20,8 +21,8 @@ class AudioUploadPage extends StatefulWidget {
 class _AudioUploadPageState extends State<AudioUploadPage> {
   final _formKey = GlobalKey<FormState>();
   late String _title;
-  String _category = 'Audiobook'; // Default value
-  String _genre = 'Mystery'; // Default value
+  String _category = 'Audiobook';
+  String _genre = 'Mystery';
   late String _audioUrl;
   File? _featureImage, _audioFile;
   bool loading = false;
@@ -227,7 +228,7 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
         toastMessage('Feature Image is missing', Colors.red);
       }
 
-      // Error message
+
       setState(() {
         loading = false;
       });
@@ -235,9 +236,8 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
     }
 
     try {
-      final featureImageUpload = _featureImage != null
-          ? _uploadFeatureImage(_featureImage!)
-          : Future.value(null);
+
+      final featureImageUpload = _featureImage != null ? _uploadFeatureImage(_featureImage!) : Future.value(null);
       final audioFileUpload = _uploadAudioFile(_audioFile!);
 
       final results = await Future.wait([featureImageUpload, audioFileUpload]);
@@ -247,16 +247,19 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
       final DatabaseReference databaseRef = _database.ref();
       final String key = _title; // Use the title as the key
 
-      if (_category == 'Audiobook') {
-        final DataSnapshot existingAudiobookSnapshot =
-        await databaseRef.child('audiobooks').child(key).get();
-        if (existingAudiobookSnapshot.exists) {
-          toastMessage('An audiobook with this title already exists', Colors.red);
-          setState(() {
-            loading = false;
-          });
-          return;
+      final DataSnapshot existingStorySnapshot = await databaseRef.child('fictional-stories').child(key).get();
+      if (existingStorySnapshot.exists) {
+
+        final bool addNewEpisode = await _showConfirmationDialog(context, 'A story with this title already exists. Do you want to add a new episode to it?');
+        if (addNewEpisode) {
+          await _addNewEpisode(databaseRef, key, audioUrl);
         } else {
+          toastMessage('Upload canceled', Colors.red);
+          return;
+        }
+      } else {
+        // New story
+        if (_category == 'Audiobook') {
           await databaseRef.child('audiobooks').child(key).set({
             'title': _title,
             'featureImage': featureImageUrl,
@@ -264,52 +267,36 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
             'genre': _genre,
             'audioUrl': audioUrl,
           });
-        }
-      } else if (_category == 'Fictional Story') {
-        final DataSnapshot existingStorySnapshot =
-        await databaseRef.child('fictional-stories').child(key).get();
-        if (existingStorySnapshot.exists) {
-          final bool addNewEpisode = await _showConfirmationDialog(context,
-              'A story with this title already exists. Do you want to add a new episode to it?');
-          if (addNewEpisode) {
-            await _addNewEpisode(databaseRef, key, audioUrl);
-          } else {
-            toastMessage('Upload canceled', Colors.red); // Cancel message
-            setState(() {
-              loading = false;
-            });
-            return;
-          }
-        } else {
+        } else if (_category == 'Fictional Story') {
           final Map<String, dynamic> storyData = {
             'title': _title,
             'featureImage': featureImageUrl,
-            'category': _category,
             'genre': _genre,
-            'episodes': {
-              '1': {'audioUrl': audioUrl, 'episodeTitle': 'Episode 1'},
-            },
+            'episodes': [
+              {
+                'title': 'Episode 1',
+                'audioUrl': audioUrl,
+              },
+            ],
           };
           await databaseRef.child('fictional-stories').child(key).set(storyData);
         }
       }
 
-      toastMessage('Audio uploaded successfully', Colors.green);
-      setState(() {
-        loading = false;
-        _resetForm();
-      });
+      toastMessage('Upload successful', Colors.green);
+      print('Upload successful: $audioUrl');
+      _resetForm();
     } catch (e) {
+      toastMessage('Upload failed: $e', Colors.red);
+      print('Upload failed: $e');
+    } finally {
       setState(() {
         loading = false;
-
       });
-      toastMessage('Failed to upload audio: $e', Colors.red);
     }
   }
 
 
-  // F
   Future<String?> _uploadFeatureImage(File file) async {
     final featureImageRef =
     _storage.ref().child('featureImages/${file.uri.pathSegments.last}');
@@ -339,8 +326,10 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
     };
 
     episodes.add(newEpisode);
+
     await episodesRef.set(episodes);
-    // toastMessage('New episode added successfully', Colors.green);
+
+    toastMessage('New episode added successfully', Colors.green);
   }
 
 
@@ -557,3 +546,4 @@ Future<bool> _showConfirmationDialog(BuildContext context, String message) async
     ),
   ) ?? false;
 }
+
