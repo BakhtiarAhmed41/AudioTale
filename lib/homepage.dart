@@ -1,3 +1,4 @@
+import 'package:audio_tale/utils/shimmer_effect.dart';
 import 'package:flutter/material.dart';
 import 'audio_player.dart';
 import 'audiobooks.dart';
@@ -26,7 +27,7 @@ class HomePage extends StatelessWidget {
       future: _fetchData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: LoadingHome());
         } else {
           return SingleChildScrollView(
             padding: const EdgeInsets.all(10),

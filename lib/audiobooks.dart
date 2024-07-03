@@ -1,3 +1,5 @@
+
+import 'package:audio_tale/utils/shimmer_effect.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -70,7 +72,7 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
           // ],
         ),
         body: _audiobooks.isEmpty
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: LoadingPage())
             : ListView.builder(
           itemCount: _audiobooks.length,
           itemBuilder: (context, index) {
@@ -194,7 +196,7 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
         body: _isSearching
             ? _buildSearchResults()
             : (_audiobooks.isEmpty
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: LoadingPage())
                 : _buildAudiobooksList(_audiobooks)),
       );
     }

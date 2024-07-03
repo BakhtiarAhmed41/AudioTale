@@ -1,4 +1,5 @@
 import 'package:audio_tale/admin_screen.dart';
+import 'package:audio_tale/utils/shimmer_effect.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -61,7 +62,7 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
       ),
       ),
       body: _stories.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: LoadingPage())
           : ListView.builder(
         itemCount: _stories.length,
         itemBuilder: (context, index) {
@@ -125,7 +126,7 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
       body: _isSearching
           ? _buildSearchResults()
           : (_stories.isEmpty
-              ? Center(child: CircularProgressIndicator())
+              ? Center(child: LoadingPage())
               : _buildStoriesList(_stories)),
     );}
   }
