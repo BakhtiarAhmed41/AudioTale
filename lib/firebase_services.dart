@@ -24,4 +24,16 @@ class FirebaseService {
     });
     return stories;
   }
+
+
+  Future<void> updateAudiobook(Audiobook audiobook) async {
+    await _audiobooksRef.child('audiobooks').child(audiobook.title).update({
+      'title': audiobook.title,
+      'featureImage': audiobook.featureImage,
+      'genre': audiobook.genre,
+      'audioUrl': audiobook.audioUrl,
+    });
+  }
+
+
 }

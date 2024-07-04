@@ -43,7 +43,6 @@ class _LoadingPageState extends State<LoadingPage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                // Shimmer effect for the subtitle
                 Container(
                   height: 20,
                   width: MediaQuery.of(context).size.width * 0.6,
@@ -77,13 +76,11 @@ class LoadingHome extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Center(child: _buildShimmerPlaceholder(context, 300, 200)),
             SizedBox(height: 20),
             _buildCategoryShimmer(context),
             SizedBox(height: 50),
             _buildHorizontalScrollerShimmer(context),
             SizedBox(height: 30),
-            // _buildCategoryShimmer(context),
             _buildHorizontalScrollerShimmer(context),
           ],
         ),
@@ -125,7 +122,7 @@ class LoadingHome extends StatelessWidget {
       height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 5, // Placeholder count
+        itemCount: 5,
         itemBuilder: (context, index) {
           return _buildItemCardShimmer(context);
         },

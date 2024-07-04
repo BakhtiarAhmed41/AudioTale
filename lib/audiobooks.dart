@@ -56,20 +56,16 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
           leading: TextButton(
             onPressed: (){
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context)=> EditAudiobooks()));
-            }, child: Text("Edit", style: TextStyle(
+                  MaterialPageRoute(builder: (context)=> EditAudiobooks())).then((value) => setState(() {}));
+            }
+            , child: Text("Edit", style: TextStyle(
               fontSize: 16, color: Colors.red
           ),),
 
           ),
 
           title: Text('Audiobooks'),
-          // actions: [
-          //   TextButton(onPressed: {
-          //     Navigator.push(context,
-          //         MaterialPageRoute(builder: (context)=> EditAudiobooks()))
-          //   }, child: Text("Edit"))
-          // ],
+
         ),
         body: _audiobooks.isEmpty
             ? Center(child: LoadingPage())
@@ -141,11 +137,21 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
                           ),
                         ),
                         padding: EdgeInsets.all(10),
-                        child: Text(
-                          audiobook.title,
-                          style:
-                          TextStyle(color: Colors.white, fontSize: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              audiobook.title,
+                              style:
+                              TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                            Text(
+                              audiobook.genre,
+                              style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold ),
+                            ),
+                          ],
                         ),
+
                       ),
                     ),
                   ],
@@ -272,10 +278,21 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
                       ),
                     ),
                     padding: EdgeInsets.all(10),
-                    child: Text(
-                      audiobook.title,
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          audiobook.title,
+                          style:
+                          TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        Text(
+                          audiobook.genre,
+                          style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold ),
+                        ),
+                      ],
                     ),
+
                   ),
                 ),
               ],
