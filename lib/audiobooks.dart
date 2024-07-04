@@ -215,7 +215,6 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
                   value: 'All',
                   child: Text('All'),
                 ),
-                // Add more genres here
                 const PopupMenuItem<String>(
                   value: 'Mystery',
                   child: Text('Mystery'),
@@ -227,8 +226,8 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
                   value: 'Fantasy',
                   child: Text('Fantasy'),
                 ),const PopupMenuItem<String>(
-                  value: 'Sci-Fi',
-                  child: Text('Sci-Fi'),
+                  value: 'Romance',
+                  child: Text('Romance'),
                 ),
               ],
               icon: Icon(Icons.filter_list),

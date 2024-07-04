@@ -39,5 +39,19 @@ class FirebaseService {
       }).then((onValue){
         toastMessage("Audiobook Updated", Colors.green);
       });
-    }}
+    }
+
+  Future<void> updateFictionalStory(FictionalStory story, String existingTitle) async {
+    await _fictionalStoriesRef.child(existingTitle).set({
+      'title': story.title,
+      'featureImage': story.featureImage,
+      'genre': story.genre,
+      'episodes': story.episodes.map((e) => e.toMap()).toList(),
+    });
+  }
+
+
+
+
+}
 

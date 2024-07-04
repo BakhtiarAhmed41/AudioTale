@@ -146,7 +146,6 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
                   value: 'All',
                   child: Text('All'),
                 ),
-                // Add more genres here
                 const PopupMenuItem<String>(
                   value: 'Mystery',
                   child: Text('Mystery'),
@@ -158,8 +157,12 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
                   value: 'Fantasy',
                   child: Text('Fantasy'),
                 ),const PopupMenuItem<String>(
-                  value: 'Sci-Fi',
-                  child: Text('Sci-Fi'),
+                  value: 'Self-Guidance',
+                  child: Text('Self-Guidance'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'Romance',
+                  child: Text('Romance'),
                 ),
               ],
               icon: Icon(Icons.filter_list),
@@ -237,9 +240,13 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      story.title,
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    Expanded(
+                      child: Text(
+                        story.title,
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     ),
                     Text(
                       story.genre,

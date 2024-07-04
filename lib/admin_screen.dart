@@ -32,7 +32,7 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
   final List<String> _genres = [
     'Thriller',
     'Mystery',
-    'Romantic',
+    'Romance',
     'Self-Guidance'
     'Fantasy',
     'Horror',
@@ -451,6 +451,13 @@ class _EditAudiobooksState extends State<EditAudiobooks> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Update and Delete Audiobooks"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+
+        ),
       ),
       body: ListView.separated(
         itemCount: _audiobooks.length,
@@ -659,7 +666,7 @@ class EditStories extends StatefulWidget {
 }
 
 class _EditStoriesState extends State<EditStories> {
-  final  _firebaseDatabaseRef = FirebaseDatabase.instance.ref();
+  final _firebaseDatabaseRef = FirebaseDatabase.instance.ref();
   final FirebaseService _firebaseService = FirebaseService();
   List<FictionalStory> _fictionalStories = [];
 
@@ -669,7 +676,6 @@ class _EditStoriesState extends State<EditStories> {
     _fetchFictionalStories();
   }
 
-
   void _fetchFictionalStories() async {
     List<FictionalStory> stories = await _firebaseService.fetchFictionalStories();
     setState(() {
@@ -678,11 +684,8 @@ class _EditStoriesState extends State<EditStories> {
   }
 
   Future<void> _deleteStory(String storyTitle) async {
-    if (await _showConfirmationDialog(
-        context, "Do you want to delete this Story?")) {
-      await _firebaseDatabaseRef.child('fictional-stories')
-          .child(storyTitle)
-          .remove();
+    if (await _showConfirmationDialog(context, "Do you want to delete this Story?")) {
+      await _firebaseDatabaseRef.child('fictional-stories').child(storyTitle).remove();
       toastMessage("Fictional Story deleted successfully", Colors.red);
       setState(() {
         _fictionalStories.removeWhere((story) => story.title == storyTitle);
@@ -690,58 +693,252 @@ class _EditStoriesState extends State<EditStories> {
     }
   }
 
+  Future<bool> _showConfirmationDialog(BuildContext context, String message) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirmation"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text("Confirm"),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+  void _showUpdateDialog(FictionalStory story) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return UpdateFictionalStoryDialog(story: story, firebaseService: _firebaseService);
+      },
+    );
+  }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-              "Update and Delete Stories"
-          ),
-        ),
-        body: ListView.separated(
-          itemCount: _fictionalStories.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-
-                  Column(
-                    children: [
-
-                      Text(_fictionalStories[index].title.toString(), style: Theme.of(context).textTheme.bodyLarge,),
-                    ],
-                  ),
-                  SizedBox(width: 50),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(onPressed: (){
-
-                      }, icon: Icon(Icons.edit), color: Colors.blue),
-                      SizedBox(width: 10),
-                      IconButton(onPressed: (){
+      appBar: AppBar(
+        title: Text("Update and Delete Stories"),
+      ),
+      body: ListView.separated(
+        itemCount: _fictionalStories.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      _fictionalStories[index].title.toString(),
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ],
+                ),
+                SizedBox(width: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        _showUpdateDialog(_fictionalStories[index]);
+                      },
+                      icon: Icon(Icons.edit),
+                      color: Colors.blue,
+                    ),
+                    SizedBox(width: 10),
+                    IconButton(
+                      onPressed: () {
                         _deleteStory(_fictionalStories[index].title.toString());
-                      }, icon: Icon(Icons.delete), color: Colors.red),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          } ,
-          separatorBuilder: (context, index) {
-            return Divider(
-              thickness: 3,
-            );
-          },
-        )
+                      },
+                      icon: Icon(Icons.delete),
+                      color: Colors.red,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+        separatorBuilder: (context, index) {
+          return Divider(thickness: 3);
+        },
+      ),
     );
   }
 }
+
+class UpdateFictionalStoryDialog extends StatefulWidget {
+  final FictionalStory story;
+  final FirebaseService firebaseService;
+
+  UpdateFictionalStoryDialog({required this.story, required this.firebaseService});
+
+  @override
+  _UpdateFictionalStoryDialogState createState() => _UpdateFictionalStoryDialogState();
+}
+
+class _UpdateFictionalStoryDialogState extends State<UpdateFictionalStoryDialog> {
+  late TextEditingController _titleController;
+  late TextEditingController _featureImageController;
+  late TextEditingController _genreController;
+  late List<Episode> _episodes;
+  String? _selectedEpisodeTitle;
+  String _audioUrl = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.story.title);
+    _featureImageController = TextEditingController(text: widget.story.featureImage);
+    _genreController = TextEditingController(text: widget.story.genre);
+    _episodes = List.from(widget.story.episodes);
+  }
+
+  Future<void> _pickAudio() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.audio);
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      final Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('audios/${DateTime.now().millisecondsSinceEpoch}');
+      final UploadTask uploadTask = storageReference.putFile(file);
+      final TaskSnapshot downloadUrl = await uploadTask;
+      final String url = await downloadUrl.ref.getDownloadURL();
+      setState(() {
+        _audioUrl = url;
+      });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      final Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('images/${DateTime.now().millisecondsSinceEpoch}');
+      final UploadTask uploadTask = storageReference.putFile(file);
+      final TaskSnapshot downloadUrl = await uploadTask;
+      final String url = await downloadUrl.ref.getDownloadURL();
+      setState(() {
+        _featureImageController.text = url;
+      });
+    }
+  }
+
+  void _updateStory() async {
+    FictionalStory updatedStory = FictionalStory(
+      title: _titleController.text,
+      featureImage: _featureImageController.text,
+      genre: _genreController.text,
+      episodes: _episodes,
+    );
+
+    await widget.firebaseService.updateFictionalStory(updatedStory, widget.story.title);
+    Navigator.of(context).pop();
+    toastMessage("Story updated successfully", Colors.green);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Update Story'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _titleController,
+              decoration: InputDecoration(labelText: 'Title'),
+            ),
+            TextField(
+              controller: _featureImageController,
+              decoration: InputDecoration(labelText: 'Feature Image URL'),
+            ),
+            TextButton(
+              onPressed: _pickImage,
+              child: Text('Pick Image'),
+            ),
+            TextField(
+              controller: _genreController,
+              decoration: InputDecoration(labelText: 'Genre'),
+            ),
+            DropdownButton<String>(
+              value: _selectedEpisodeTitle,
+              hint: Text('Select Episode'),
+              items: _episodes.map((Episode episode) {
+                return DropdownMenuItem<String>(
+                  value: episode.title,
+                  child: Text(episode.title),
+                );
+              }).toList(),
+              onChanged: (String? value) {
+                setState(() {
+                  _selectedEpisodeTitle = value;
+                });
+              },
+            ),
+            if (_selectedEpisodeTitle != null)
+              ..._episodes
+                  .where((episode) => episode.title == _selectedEpisodeTitle)
+                  .map((episode) {
+                return Column(
+                  children: [
+                    TextField(
+                      controller: TextEditingController(text: episode.title),
+                      decoration: InputDecoration(labelText: 'Episode Title'),
+                      onChanged: (value) {
+                        episode.title = value;
+                      },
+                    ),
+                    TextField(
+                      controller: TextEditingController(text: episode.audioUrl),
+                      decoration: InputDecoration(labelText: 'Episode Audio URL'),
+                    ),
+                    TextButton(
+                      onPressed: _pickAudio,
+                      child: Text('Pick Audio'),
+                    ),
+                  ],
+                );
+              }).toList(),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: _updateStory,
+          child: Text('Update'),
+        ),
+      ],
+    );
+  }
+}
+
 
 
 

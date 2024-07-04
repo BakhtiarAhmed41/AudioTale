@@ -36,7 +36,16 @@ class Episode {
       episodeNumber: data['episodeNumber'] ?? 0, // Provide a default value if null
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'audioUrl': audioUrl,
+      'episodeNumber': episodeNumber,
+    };
+  }
 }
+
 
 class Audiobook {
   String title;
