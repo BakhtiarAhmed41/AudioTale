@@ -30,12 +30,8 @@ class FirebaseService {
 
   Future<void> updateAudiobook(Audiobook audiobook) async {
     final DatabaseReference audioRef = FirebaseDatabase.instance.ref().child('audiobooks');
-    String sanitizedTitle = audiobook.title.replaceAll('.', '_').replaceAll('#', '_').replaceAll('\$', '_').replaceAll('[', '_').replaceAll(']', '_');
 
-    DatabaseEvent event = await audioRef.child(sanitizedTitle).once();
-
-    if (event.snapshot.exists) {
-      await audioRef.child(sanitizedTitle).update({
+      await audioRef.child(audiobook.title).update({
         'title': audiobook.title,
         'featureImage': audiobook.featureImage,
         'genre': audiobook.genre,
@@ -45,5 +41,3 @@ class FirebaseService {
       });
     }}
 
-
-}

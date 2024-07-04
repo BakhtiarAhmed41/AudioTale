@@ -32,7 +32,8 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
   final List<String> _genres = [
     'Thriller',
     'Mystery',
-    'Sci-Fi',
+    'Romantic',
+    'Self-Guidance'
     'Fantasy',
     'Horror',
   ];
