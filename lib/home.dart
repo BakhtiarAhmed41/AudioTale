@@ -1,5 +1,3 @@
-// This holds the skeleton (appbar and bottombar) for main screens for easy navigation
-
 import 'package:flutter/material.dart';
 import 'audiobooks.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +21,8 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
+
+
     Widget currentPage = const Text("");
 
     switch(selectedIndex) {
@@ -44,6 +44,12 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Image.asset("assets/images/Appbar_logo.png"),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back) ,
+        ),
         backgroundColor: const Color(0xff10263C),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(4.0),
@@ -52,16 +58,22 @@ class _HomeState extends State<Home> {
             height: 1.0,
           ),
         ),
-        actions:  [IconButton(onPressed: (){
-          auth.signOut().then((value) {
-            toastMessage("Logged out successfully!", Colors.green);
-            Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const Login())
-          ).onError((error, stackTrace) {
+        actions:  [IconButton(
+          onPressed: () {
+            auth.signOut().then((value) {
+              toastMessage("Logged out successfully!", Colors.green);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const Login()),
+                    (Route<dynamic> route) => false, // This will remove all previous routes
+              ).onError((error, stackTrace) {
                 toastMessage(error.toString(), Colors.red);
-          },);
-          });
-        }, icon: const Icon(Icons.logout, size: 30,)),],
+              });
+            });
+          },
+          icon: Icon(Icons.logout),
+        )
+          ,],
 
       ),
       body: currentPage,
@@ -104,3 +116,4 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
