@@ -350,13 +350,6 @@ class _AudioUploadPageState extends State<AudioUploadPage> {
 
 
 
-  // Future<String> _uploadAudioFile(File file) async {
-  //   final audioFileRef =
-  //   _storage.ref().child('audioFiles/${file.uri.pathSegments.last}');
-  //   await audioFileRef.putFile(file);
-  //   return audioFileRef.getDownloadURL();
-  // }
-
   Future<String> _uploadAudioFile(File audioFile) async {
     try {
       final storageRef = _storage.ref().child('audioFiles/${audioFile.uri.pathSegments.last}');

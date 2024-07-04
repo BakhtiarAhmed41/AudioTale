@@ -17,8 +17,10 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
   final FirebaseService _firebaseService = FirebaseService();
   List<FictionalStory> _stories = [];
   List<FictionalStory> _searchedStories = [];
+  List<FictionalStory> _filteredStories = [];
   TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
+  String _selectedGenre = 'All';
 
   final auth = FirebaseAuth.instance;
 
@@ -32,12 +34,13 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
     List<FictionalStory> stories = await _firebaseService.fetchFictionalStories();
     setState(() {
       _stories = stories;
+      _filteredStories = stories; // Initially display all stories
     });
   }
 
   void searchStories(String query) {
     _searchedStories.clear();
-    _stories.forEach((story) {
+    _filteredStories.forEach((story) {
       if (story.title.toLowerCase().contains(query.toLowerCase())) {
         _searchedStories.add(story);
       }
@@ -45,90 +48,131 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
     setState(() {});
   }
 
+  void filterStories(String genre) {
+    if (genre == 'All') {
+      _filteredStories = List.from(_stories);
+    } else {
+      _filteredStories = _stories.where((story) => story.genre == genre).toList();
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = auth.currentUser;
-    if (user?.email.toString() == "admin@email.com"){
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Fictional Stories"),
-        leading: TextButton(
-          onPressed: (){
-          Navigator.push(context,
-            MaterialPageRoute(builder: (context)=> EditStories()));
-          }, child: Text("Edit", style: TextStyle(
-    fontSize: 16, color: Colors.red
-    ),),
-      ),
-      ),
-      body: _stories.isEmpty
-          ? Center(child: LoadingPage())
-          : ListView.builder(
-        itemCount: _stories.length,
-        itemBuilder: (context, index) {
-          final story = _stories[index];
-          return _buildStoryCard(context, story);
-        },
-      ),
-    );} else {
-    return Scaffold(
-      appBar: AppBar(
-        title: _isSearching
-            ? TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: "Search Stories...",
-                  hintStyle: TextStyle(color: Colors.white),
-                  border: InputBorder.none,
-                ),
-                style: TextStyle(color: Colors.white),
-                onChanged: (query) {
-                  searchStories(query);
-                },
-              )
-            : Text("Fictional Stories"),
-        leading: _isSearching
-            ? IconButton(
-                icon: Icon(Icons.cancel),
-                onPressed: () {
-                  setState(() {
-                    _isSearching = false;
-                    _searchController.clear();
-                    _searchedStories.clear();
-                  });
-                },
-              )
-            : (user?.email.toString() == "admin@email.com"
-                ? TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditStories()));
-                    },
-                    child: Text(
-                      "Edit",
-                      style: TextStyle(fontSize: 16, color: Colors.red),
-                    ),
-                  )
-                : SizedBox()),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
+    if (user?.email.toString() == "admin@email.com") {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Fictional Stories"),
+          leading: TextButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EditStories())).then((value) => setState(() {}));
+            },
+            child: Text(
+              "Edit",
+              style: TextStyle(fontSize: 16, color: Colors.red),
+            ),
+          ),
+        ),
+        body: _stories.isEmpty
+            ? Center(child: LoadingPage())
+            : ListView.builder(
+          itemCount: _stories.length,
+          itemBuilder: (context, index) {
+            final story = _stories[index];
+            return _buildStoryCard(context, story);
+          },
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: _isSearching
+              ? TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: "Search Stories...",
+              hintStyle: TextStyle(color: Colors.white),
+              border: InputBorder.none,
+            ),
+            style: TextStyle(color: Colors.white),
+            onChanged: (query) {
+              searchStories(query);
+            },
+          )
+              : Text("Fictional Stories"),
+          leading: _isSearching
+              ? IconButton(
+            icon: Icon(Icons.cancel),
             onPressed: () {
               setState(() {
-                _isSearching = true;
+                _isSearching = false;
+                _searchController.clear();
+                _searchedStories.clear();
               });
             },
-          ),
-        ],
-      ),
-      body: _isSearching
-          ? _buildSearchResults()
-          : (_stories.isEmpty
-              ? Center(child: LoadingPage())
-              : _buildStoriesList(_stories)),
-    );}
+          )
+              : (user?.email.toString() == "admin@email.com"
+              ? TextButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EditStories()));
+            },
+            child: Text(
+              "Edit",
+              style: TextStyle(fontSize: 16, color: Colors.red),
+            ),
+          )
+              : SizedBox()),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                setState(() {
+                  _isSearching = true;
+                });
+              },
+            ),
+            PopupMenuButton<String>(
+              onSelected: (String result) {
+                _selectedGenre = result;
+                filterStories(result);
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'All',
+                  child: Text('All'),
+                ),
+                // Add more genres here
+                const PopupMenuItem<String>(
+                  value: 'Mystery',
+                  child: Text('Mystery'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'Thriller',
+                  child: Text('Thriller'),
+                ),const PopupMenuItem<String>(
+                  value: 'Fantasy',
+                  child: Text('Fantasy'),
+                ),const PopupMenuItem<String>(
+                  value: 'Sci-Fi',
+                  child: Text('Sci-Fi'),
+                ),
+              ],
+              icon: Icon(Icons.filter_list),
+            ),
+          ],
+        ),
+        body: _isSearching
+            ? _buildSearchResults()
+            : (_filteredStories.isEmpty
+            ? Center(child: LoadingPage())
+            : _buildStoriesList(_filteredStories)),
+      );
+    }
   }
 
   Widget _buildStoriesList(List<FictionalStory> stories) {
@@ -196,14 +240,11 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
                     Text(
                       story.title,
                       style: TextStyle(color: Colors.white, fontSize: 20),
-
                     ),
-
                     Text(
                       story.genre,
-                      style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold ),
+                      style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold),
                     ),
-
                   ],
                 ),
               ),

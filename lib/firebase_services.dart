@@ -1,5 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'models/models.dart';
+import 'package:audio_tale/utils/toast.dart';
 
 class FirebaseService {
   final DatabaseReference _audiobooksRef = FirebaseDatabase.instance.ref().child('audiobooks');
@@ -27,13 +29,21 @@ class FirebaseService {
 
 
   Future<void> updateAudiobook(Audiobook audiobook) async {
-    await _audiobooksRef.child('audiobooks').child(audiobook.title).update({
-      'title': audiobook.title,
-      'featureImage': audiobook.featureImage,
-      'genre': audiobook.genre,
-      'audioUrl': audiobook.audioUrl,
-    });
-  }
+    final DatabaseReference audioRef = FirebaseDatabase.instance.ref().child('audiobooks');
+    String sanitizedTitle = audiobook.title.replaceAll('.', '_').replaceAll('#', '_').replaceAll('\$', '_').replaceAll('[', '_').replaceAll(']', '_');
+
+    DatabaseEvent event = await audioRef.child(sanitizedTitle).once();
+
+    if (event.snapshot.exists) {
+      await audioRef.child(sanitizedTitle).update({
+        'title': audiobook.title,
+        'featureImage': audiobook.featureImage,
+        'genre': audiobook.genre,
+        'audioUrl': audiobook.audioUrl,
+      }).then((onValue){
+        toastMessage("Audiobook Updated", Colors.green);
+      });
+    }}
 
 
 }

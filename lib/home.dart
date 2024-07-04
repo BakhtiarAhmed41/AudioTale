@@ -44,13 +44,9 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Image.asset("assets/images/Appbar_logo.png"),
         centerTitle: true,
-        leading: IconButton(
-          onPressed: (){
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back) ,
-        ),
+
         backgroundColor: const Color(0xff10263C),
+
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(4.0),
           child: Container(

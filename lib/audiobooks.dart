@@ -1,4 +1,3 @@
-
 import 'package:audio_tale/utils/shimmer_effect.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +17,10 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
   final FirebaseService _firebaseService = FirebaseService();
   List<Audiobook> _audiobooks = [];
   List<Audiobook> _searchedAudiobooks = [];
+  List<Audiobook> _filteredAudiobooks = [];
   TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
+  String _selectedGenre = 'All';
 
   final auth = FirebaseAuth.instance;
 
@@ -33,12 +34,13 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
     List<Audiobook> audiobooks = await _firebaseService.fetchAudiobooks();
     setState(() {
       _audiobooks = audiobooks;
+      _filteredAudiobooks = audiobooks; // Initially display all audiobooks
     });
   }
 
   void searchAudiobooks(String query) {
     _searchedAudiobooks.clear();
-    _audiobooks.forEach((audiobook) {
+    _filteredAudiobooks.forEach((audiobook) {
       if (audiobook.title.toLowerCase().contains(query.toLowerCase())) {
         _searchedAudiobooks.add(audiobook);
       }
@@ -46,26 +48,32 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
     setState(() {});
   }
 
+  void filterAudiobooks(String genre) {
+    if (genre == 'All') {
+      _filteredAudiobooks = List.from(_audiobooks);
+    } else {
+      _filteredAudiobooks = _audiobooks.where((audiobook) => audiobook.genre == genre).toList();
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = auth.currentUser;
-    if (user?.email.toString() == "admin@email.com"){
+    if (user?.email.toString() == "admin@email.com") {
       return Scaffold(
         appBar: AppBar(
-
           leading: TextButton(
-            onPressed: (){
+            onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context)=> EditAudiobooks())).then((value) => setState(() {}));
-            }
-            , child: Text("Edit", style: TextStyle(
-              fontSize: 16, color: Colors.red
-          ),),
-
+                  MaterialPageRoute(builder: (context) => EditAudiobooks())).then((value) => setState(() {}));
+            },
+            child: Text(
+              "Edit",
+              style: TextStyle(fontSize: 16, color: Colors.red),
+            ),
           ),
-
           title: Text('Audiobooks'),
-
         ),
         body: _audiobooks.isEmpty
             ? Center(child: LoadingPage())
@@ -73,7 +81,6 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
           itemCount: _audiobooks.length,
           itemBuilder: (context, index) {
             final audiobook = _audiobooks[index];
-
             return GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -147,11 +154,10 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
                             ),
                             Text(
                               audiobook.genre,
-                              style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold ),
+                              style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
-
                       ),
                     ),
                   ],
@@ -166,19 +172,20 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
         appBar: AppBar(
           title: _isSearching
               ? TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: "Search Audiobooks...",
-                    hintStyle: TextStyle(color: Colors.white),
-                    border: InputBorder.none,
-                  ),
-                  style: TextStyle(color: Colors.white),
-                  onChanged: (query) {
-                    searchAudiobooks(query);
-                  },
-                )
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: "Search Audiobooks...",
+              hintStyle: TextStyle(color: Colors.white),
+              border: InputBorder.none,
+            ),
+            style: TextStyle(color: Colors.white),
+            onChanged: (query) {
+              searchAudiobooks(query);
+            },
+          )
               : Text('Audiobooks'),
-          leading: _isSearching ? IconButton(
+          leading: _isSearching
+              ? IconButton(
             icon: Icon(Icons.cancel),
             onPressed: () {
               setState(() {
@@ -187,7 +194,8 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
                 _searchedAudiobooks.clear();
               });
             },
-          ) : SizedBox(),
+          )
+              : SizedBox(),
           actions: [
             IconButton(
               icon: Icon(Icons.search),
@@ -197,13 +205,41 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
                 });
               },
             ),
+            PopupMenuButton<String>(
+              onSelected: (String result) {
+                _selectedGenre = result;
+                filterAudiobooks(result);
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'All',
+                  child: Text('All'),
+                ),
+                // Add more genres here
+                const PopupMenuItem<String>(
+                  value: 'Mystery',
+                  child: Text('Mystery'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'Thriller',
+                  child: Text('Thriller'),
+                ),const PopupMenuItem<String>(
+                  value: 'Fantasy',
+                  child: Text('Fantasy'),
+                ),const PopupMenuItem<String>(
+                  value: 'Sci-Fi',
+                  child: Text('Sci-Fi'),
+                ),
+              ],
+              icon: Icon(Icons.filter_list),
+            ),
           ],
         ),
         body: _isSearching
             ? _buildSearchResults()
-            : (_audiobooks.isEmpty
-                ? Center(child: LoadingPage())
-                : _buildAudiobooksList(_audiobooks)),
+            : (_filteredAudiobooks.isEmpty
+            ? Center(child: LoadingPage())
+            : _buildAudiobooksList(_filteredAudiobooks)),
       );
     }
   }
@@ -213,7 +249,6 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
       itemCount: audiobooks.length,
       itemBuilder: (context, index) {
         final audiobook = audiobooks[index];
-
         return GestureDetector(
           onTap: () {
             Navigator.push(
@@ -292,7 +327,6 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
                         ),
                       ],
                     ),
-
                   ),
                 ),
               ],
