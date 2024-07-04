@@ -580,7 +580,7 @@ class _EditAudiobookPopupState extends State<EditAudiobookPopup> {
         audioUrl: _audioUrl!,
       );
 
-      await _firebaseService.updateAudiobook(updatedAudiobook);
+      await _firebaseService.updateAudiobook(updatedAudiobook, widget.audiobook.title);
       widget.onUpdate();
     }
   }

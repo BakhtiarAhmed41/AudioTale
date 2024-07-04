@@ -28,10 +28,10 @@ class FirebaseService {
   }
 
 
-  Future<void> updateAudiobook(Audiobook audiobook) async {
+  Future<void> updateAudiobook(Audiobook audiobook, String existingTitle) async {
     final DatabaseReference audioRef = FirebaseDatabase.instance.ref().child('audiobooks');
 
-      await audioRef.child(audiobook.title).update({
+      await audioRef.child(existingTitle).update({
         'title': audiobook.title,
         'featureImage': audiobook.featureImage,
         'genre': audiobook.genre,
