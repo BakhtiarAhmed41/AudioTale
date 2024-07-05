@@ -34,7 +34,7 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
     List<FictionalStory> stories = await _firebaseService.fetchFictionalStories();
     setState(() {
       _stories = stories;
-      _filteredStories = stories; // Initially display all stories
+      _filteredStories = stories;
     });
   }
 
@@ -65,9 +65,10 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
         appBar: AppBar(
           title: Text("Fictional Stories"),
           leading: TextButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => EditStories())).then((value) => setState(() {}));
+            onPressed: () async{
+              await Navigator.push(context,
+                   MaterialPageRoute(builder: (context) => EditStories()));
+              fetchFictionalStories();
             },
             child: Text(
               "Edit",

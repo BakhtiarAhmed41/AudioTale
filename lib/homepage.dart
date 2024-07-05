@@ -120,10 +120,11 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 20),
-                Center(child: Text("Recommended Audios", style: Theme.of(context).textTheme.displayLarge)),
+                Center(child: Text("Classic Mysteries", style: Theme.of(context).textTheme.displayLarge)),
                 _buildHorizontalScroller(_audiobooks, context),
+
                 SizedBox(height: 20),
-                Center(child: Text("Audience Favourite", style: Theme.of(context).textTheme.displayLarge)),
+                Center(child: Text("Horror Tales", style: Theme.of(context).textTheme.displayLarge)),
                 _buildHorizontalScroller(_fictionalStories, context),
               ],
             ),
@@ -158,7 +159,7 @@ class HomePage extends StatelessWidget {
     String title;
     VoidCallback onTap;
 
-    if (item is Audiobook) {
+    if (item is Audiobook && item.genre == "Mystery") {
       imageUrl = item.featureImage;
       title = item.title;
       onTap = () {
@@ -175,7 +176,7 @@ class HomePage extends StatelessWidget {
           ),
         );
       };
-    } else if (item is FictionalStory) {
+    } else if (item is FictionalStory && item.genre == "Horror") {
       imageUrl = item.featureImage;
       title = item.title;
       onTap = () {

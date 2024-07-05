@@ -64,9 +64,12 @@ class _AudiobookScreenState extends State<AudiobookScreen> {
       return Scaffold(
         appBar: AppBar(
           leading: TextButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => EditAudiobooks())).then((value) => setState(() {}));
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EditAudiobooks()),
+              );
+              fetchAudiobooks();
             },
             child: Text(
               "Edit",
