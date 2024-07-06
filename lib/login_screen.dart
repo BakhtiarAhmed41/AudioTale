@@ -36,8 +36,7 @@ class _LoginState extends State<Login> {
         loading = true;
       });
 
-      _auth
-          .signInWithEmailAndPassword(
+      _auth.signInWithEmailAndPassword(
           email: emailController.text.toString(),
           password: passwordController.text.toString())
           .then((value) {

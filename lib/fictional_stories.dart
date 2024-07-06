@@ -158,8 +158,8 @@ class _FictionalStoriesScreenState extends State<FictionalStoriesScreen> {
                   value: 'Fantasy',
                   child: Text('Fantasy'),
                 ),const PopupMenuItem<String>(
-                  value: 'Self-Guidance',
-                  child: Text('Self-Guidance'),
+                  value: 'Horror',
+                  child: Text('Horror'),
                 ),
                 const PopupMenuItem<String>(
                   value: 'Romance',
