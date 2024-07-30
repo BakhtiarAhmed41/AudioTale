@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-// import 'package:auth_firebase/firebase_options.dart';
 import 'splash_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'firebase_credentials.dart';
 
 
 void main() async{
@@ -11,11 +11,11 @@ void main() async{
   await Firebase.initializeApp(
       options:
       const FirebaseOptions(
-        apiKey: 'AIzaSyBH4d5dfJRHIYz_1fR6PW80EMD94bhFcz8',
-        appId: 'appId',
-        messagingSenderId: 'messagingSenderId',
-        projectId: 'audio-tale',
-        storageBucket: 'audio-tale.appspot.com',   )
+        apiKey: apiKey,
+        appId: appId,
+        messagingSenderId: messagingSenderId,
+        projectId: projectId,
+        storageBucket: storageBucket,   )
   );
   runApp(const MyApp());
 }
